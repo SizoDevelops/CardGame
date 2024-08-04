@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cjsbc70scgaim"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_fw7x4"]
+[ext_resource type="PackedScene" uid="uid://cu8e27au77gw2" path="res://scenes/deck.tscn" id="1_k2kiv"]
+
+[node name="MAIN" type="Node2D"]
+script = ExtResource("1_fw7x4")
+
+[node name="Controller" type="Node" parent="."]
+
+[node name="Deck" parent="Controller" instance=ExtResource("1_k2kiv")]

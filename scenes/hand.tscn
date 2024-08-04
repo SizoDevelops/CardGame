@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://bw78j4fblf4y5"]
+
+[ext_resource type="Script" path="res://scripts/hand.gd" id="1_xdbo2"]
+
+[sub_resource type="Curve2D" id="Curve2D_pd5j7"]
+_data = {
+"points": PackedVector2Array(-4.87308, 5.84628, 4.87308, -5.84628, 360.238, 314.92, -151.79, -147.267, 151.79, 147.267, 633.624, 313.361)
+}
+point_count = 2
+
+[node name="PlayerHand" type="Node2D"]
+script = ExtResource("1_xdbo2")
+
+[node name="Path2D" type="Path2D" parent="."]
+position = Vector2(-11, 203)
+scale = Vector2(1.01322, 0.641433)
+curve = SubResource("Curve2D_pd5j7")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+position = Vector2(360.238, 314.92)
+rotation = -0.875939
+
+[node name="DeckSpawner" type="Marker2D" parent="Path2D/PathFollow2D"]
+position = Vector2(-1.52588e-05, -3.8147e-05)
+
+[node name="DeckLocation" type="Marker2D" parent="."]
