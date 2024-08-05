@@ -4,20 +4,22 @@
 [ext_resource type="Script" path="res://scripts/player_store.gd" id="1_r03w0"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uk2vx"]
-size = Vector2(72, 55)
+size = Vector2(94, 63)
 
 [node name="PlayerStore" type="Area2D"]
 script = ExtResource("1_r03w0")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-1, -0.5)
+position = Vector2(-1, -2.5)
 shape = SubResource("RectangleShape2D_uk2vx")
+debug_color = Color(0, 0.6, 0.701961, 0.145098)
 
 [node name="Node2D" type="Node2D" parent="CollisionShape2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D/Node2D"]
 
 [node name="Frame" type="Sprite2D" parent="."]
-position = Vector2(-1, 0)
+position = Vector2(-0.999991, -2.3811)
 rotation = 1.5708
+scale = Vector2(1.22404, 1.391)
 texture = ExtResource("1_13iwa")

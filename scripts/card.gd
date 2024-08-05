@@ -15,9 +15,18 @@ var on_table = false
 var stacked = false
 var selected_card = false
 var drag_offset = Vector2()
-@export var table_size = Rect2(Vector2(0, 0), Vector2(300, 180))
-@onready var PlayerHand = "res://scenes/hand.tscn"
+var selectable = true
+var touchable = true
 
+
+signal active_card(node)
+signal card_selected(node)
+
+
+
+
+func set_selectable(val):
+	selectable = val
 
 # Store original properties
 var original_z_index
@@ -28,13 +37,14 @@ func move_card(dest, _rotate = null, _scale = null):
 		var tween = get_tree().create_tween()
 		
 		tween.tween_property(self, "position", dest, 0.5 ).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-		if _rotate != null:
-			#tween.tween_property(self, "rotation", rotation, rotate, 0.2, Tween.TRANS_LINEAR, Tween.EASE_IN)
-			tween.tween_property(self, "rotation", _rotate, 0.2 ).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN)
-			
 		if _scale != null:
 			#tween.tween_property(self, "scale", scale, _scale, 0.5, Tween.TRANS_BACK, Tween.EASE_OUT)
 			tween.tween_property(self, "scale", _scale, 0.5 ).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		if _rotate != null:
+
+			tween.tween_property(self, "rotation", _rotate, 0.2 ).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN)
+			
+		
 		original_z_index = z_index
 		original_rotation = rotation
 		original_scale = scale	
@@ -48,13 +58,13 @@ func change_cardscale(_scale):
 	scale = _scale
 
 func card_width():
-	var cardwidth = $Sprite2D.texture.get_width() * scale.x + 0.065
+	var cardwidth = $Sprite2D.texture.get_width() * scale.x
 	return cardwidth
 
 func kill_card():
 	queue_free()
 
-	
+
 
 
 func stack_on_card(card):
@@ -67,20 +77,69 @@ func set_on_table(value):
 	on_table = value
 
 
-func _on_input_event(viewport, event, shape_idx):
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.pressed:
-			
-			var position_shift = position
-			position_shift.y -= focus_move_on_y
-			if position == handposition:
-				move_card(position_shift, 0.0)
-			z_index = 2
-			selected_card = true
-			emit_signal("active_card", self)
-		else:
-			move_card(handposition, handrotation)
-			z_index = 0
-			selected_card = false
+func make_focus():
+	if selectable:
+		var position_shift = position
+		position_shift.y -= focus_move_on_y
+		if position == handposition:
+			move_card(position_shift, 0.0)
+		z_index = 2
+		selected_card = true
+		emit_signal("active_card", self)
 
+
+
+func off_focus():
+	if selectable:
+		move_card(handposition, handrotation)
+		z_index = 1
+		selected_card = false
+		touchable = true
+
+func make_active(card):
+	if card != self:
+		off_focus()
+
+func _on_input_event(viewport, event, shape_idx):
+	if touchable:
+		
+		if event is InputEventMouseButton || event is InputEventScreenTouch:
+			
+			if selected_card:
+				if event.button_index == MOUSE_BUTTON_LEFT and event.pressed || event.is_pressed():
+					print("something")
+					off_focus()
+					selected_card = false
+					
+			elif !selected_card:
+				
+				if  event.button_index == MOUSE_BUTTON_LEFT and event.pressed || event.is_pressed():
+					make_focus()
+					selected_card = true
+					
+					
+
+
+
+
+#
+#func _on_input_event(viewport, event, shape_idx):
+	#if event is InputEventMouseButton:
+	#
+		#if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			#z_index = 1
+		#
+			#var position_shift = position
+			#position_shift.y -= focus_move_on_y
+			#if position == handposition:
+				#move_card(position_shift, 0.0)
+			#
+			#selected_card = true
+			#emit_signal("card_selected", self)
+			#
+		#else:
+			#z_index = 0
+			#move_card(handposition, handrotation)
+			#selected_card = false
+#
 

@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://v4uc7jp78lm0"]
+[gd_scene load_steps=3 format=3 uid="uid://v4uc7jp78lm0"]
 
-[ext_resource type="Texture2D" uid="uid://c6h2ot341m5ft" path="res://other/table.png" id="1_yjwxl"]
+[ext_resource type="Texture2D" uid="uid://druuul3nxsifq" path="res://other/table.png" id="1_yjwxl"]
+[ext_resource type="Script" path="res://scripts/table.gd" id="2_bp0r8"]
 
-[node name="Node2D" type="Node2D"]
+[node name="Table" type="Node2D"]
+script = ExtResource("2_bp0r8")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_yjwxl")

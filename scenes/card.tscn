@@ -1,21 +1,24 @@
 [gd_scene load_steps=4 format=3 uid="uid://dd47s87tjqtkl"]
 
 [ext_resource type="Script" path="res://scripts/card.gd" id="1_blw7g"]
-[ext_resource type="Texture2D" uid="uid://dywrbtshxejxi" path="res://PNG/blue_back.png" id="2_7hjl8"]
+[ext_resource type="Texture2D" uid="uid://cea83cdrjny8y" path="res://PNG/blue_back.png" id="2_7hjl8"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_gnqvj"]
-size = Vector2(37, 84)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yu3td"]
+resource_local_to_scene = true
+size = Vector2(80, 133)
 
 [node name="Card" type="Area2D"]
+z_as_relative = false
+y_sort_enabled = true
 script = ExtResource("1_blw7g")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(18.5, -33)
-scale = Vector2(0.08, 0.08)
+scale = Vector2(0.126176, 0.125947)
 texture = ExtResource("2_7hjl8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(9.5, -33)
-shape = SubResource("RectangleShape2D_gnqvj")
+z_as_relative = false
+use_parent_material = true
+shape = SubResource("RectangleShape2D_yu3td")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]

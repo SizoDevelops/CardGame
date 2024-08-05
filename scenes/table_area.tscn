@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://dbeh2b6r8kfks"]
+
+[ext_resource type="Texture2D" uid="uid://bpb6fkiwam5av" path="res://other/add.png" id="1_gupju"]
+[ext_resource type="Script" path="res://scripts/table_area.gd" id="1_js0a6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_op6u8"]
+size = Vector2(33, 42)
+
+[node name="TableArea" type="Area2D"]
+script = ExtResource("1_js0a6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 1)
+shape = SubResource("RectangleShape2D_op6u8")
+
+[node name="Area" type="Marker2D" parent="."]
+
+[node name="Add" type="Sprite2D" parent="."]
+position = Vector2(0, 1)
+scale = Vector2(0.649038, 0.649038)
+texture = ExtResource("1_gupju")
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]

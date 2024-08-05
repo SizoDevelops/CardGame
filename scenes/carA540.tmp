@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://dd47s87tjqtkl"]
+
+[ext_resource type="Script" path="res://scripts/card.gd" id="1_blw7g"]
+[ext_resource type="Texture2D" uid="uid://cea83cdrjny8y" path="res://PNG/blue_back.png" id="2_7hjl8"]
+
+[node name="Card" type="TextureRect"]
+offset_right = 170.0
+offset_bottom = 260.0
+scale = Vector2(0.905, 0.905)
+mouse_filter = 2
+texture = ExtResource("2_7hjl8")
+expand_mode = 1
+script = ExtResource("1_blw7g")
+focus_move_on_y = null
