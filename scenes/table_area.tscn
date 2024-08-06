@@ -1,23 +1,57 @@
-[gd_scene load_steps=4 format=3 uid="uid://dbeh2b6r8kfks"]
+[gd_scene load_steps=5 format=3 uid="uid://dbeh2b6r8kfks"]
 
 [ext_resource type="Texture2D" uid="uid://bpb6fkiwam5av" path="res://other/add.png" id="1_gupju"]
 [ext_resource type="Script" path="res://scripts/table_area.gd" id="1_js0a6"]
+[ext_resource type="Texture2D" uid="uid://d0diym2na8uvc" path="res://other/button_unclicked.png" id="2_bn818"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_op6u8"]
-size = Vector2(33, 42)
+size = Vector2(45, 16)
 
 [node name="TableArea" type="Area2D"]
+position = Vector2(-1, -2)
 script = ExtResource("1_js0a6")
 
+[node name="ButtonUnclicked" type="Sprite2D" parent="."]
+light_mask = 512
+visibility_layer = 512
+z_index = 544
+position = Vector2(0.538462, -50.25)
+scale = Vector2(0.448718, 0.448718)
+texture = ExtResource("2_bn818")
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, 1)
+z_index = 600
+position = Vector2(0.538462, -50.25)
 shape = SubResource("RectangleShape2D_op6u8")
 
-[node name="Area" type="Marker2D" parent="."]
-
 [node name="Add" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(0, 1)
 scale = Vector2(0.649038, 0.649038)
 texture = ExtResource("1_gupju")
+
+[node name="Area" type="Marker2D" parent="."]
+position = Vector2(0, 2)
+
+[node name="HSlider" type="HSlider" parent="."]
+visible = false
+offset_left = -44.0
+offset_top = -13.0
+offset_right = 46.0
+offset_bottom = 3.0
+max_value = 10.0
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -19.0
+offset_top = -84.0
+offset_right = 21.0
+offset_bottom = -61.0
+grow_horizontal = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]

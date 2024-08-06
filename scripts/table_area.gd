@@ -3,9 +3,12 @@ extends Area2D
 
 
 var area_id = ""
-signal  id_set(id, event:InputEvent)
+signal  id_set(id, node, value, slider)
+var stack_size = 0
 
 func _ready():
+	$HSlider.connect("value_changed", Callable(self, "_on_HSlider_value_changed"))
+	$Label.text = str($HSlider.min_value)
 	# Create an instance of the RandomNumberGenerator
 	var rng = RandomNumberGenerator.new()
 	
@@ -30,10 +33,13 @@ func generate_random_id(rng: RandomNumberGenerator):
 	
 	return id
 
-
-
+func _on_HSlider_value_changed(value):
+	# Update the label with the current value of the slider
+	$Label.text = str(value)
+	stack_size = value
 
 func _on_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			emit_signal("id_set", area_id, event)
+			emit_signal("id_set", area_id, $Area, stack_size, $HSlider)
+			

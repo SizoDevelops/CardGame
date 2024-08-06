@@ -25,34 +25,34 @@ position = Vector2(466, 216)
 position = Vector2(-1, -1)
 
 [node name="TableArea" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(237, 94)
+position = Vector2(230, 111)
 
 [node name="TableArea3" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(716, 194)
+position = Vector2(717, 220)
 
 [node name="TableArea4" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(614, 192)
+position = Vector2(615, 220)
 
 [node name="TableArea5" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(502, 192)
+position = Vector2(505, 221)
 
 [node name="TableArea6" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(384, 194)
+position = Vector2(389, 220)
 
 [node name="TableArea7" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(658, 93)
+position = Vector2(677, 108)
 
 [node name="TableArea8" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(549, 93)
+position = Vector2(555, 110)
 
 [node name="TableArea9" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(442, 93)
+position = Vector2(446, 109)
 
 [node name="TableArea10" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(336, 95)
+position = Vector2(337, 110)
 
 [node name="TableArea11" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(265, 194)
+position = Vector2(263, 220)
 
 [connection signal="id_set" from="Controller/TableArea" to="Controller/PlayerHand" method="_on_table_area_id_set"]
 [connection signal="input_event" from="Controller/TableArea" to="Controller/PlayerHand" method="_on_table_area_input_event"]

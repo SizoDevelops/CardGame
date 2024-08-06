@@ -21,8 +21,8 @@ var touchable = true
 
 signal active_card(node)
 signal card_selected(node)
-
-
+signal add_to_stack(node)
+signal remove_from_stack(node)
 
 
 func set_selectable(val):
@@ -86,7 +86,7 @@ func make_focus():
 		z_index = 2
 		selected_card = true
 		emit_signal("active_card", self)
-
+		
 
 
 func off_focus():
@@ -100,6 +100,12 @@ func make_active(card):
 	if card != self:
 		off_focus()
 
+func table_card(card):
+	if card == self:
+
+		emit_signal("add_to_stack", self)
+	
+	
 func _on_input_event(viewport, event, shape_idx):
 	if touchable:
 		
@@ -107,15 +113,15 @@ func _on_input_event(viewport, event, shape_idx):
 			
 			if selected_card:
 				if event.button_index == MOUSE_BUTTON_LEFT and event.pressed || event.is_pressed():
-					print("something")
 					off_focus()
+					emit_signal("remove_from_stack", self)
 					selected_card = false
 					
 			elif !selected_card:
 				
 				if  event.button_index == MOUSE_BUTTON_LEFT and event.pressed || event.is_pressed():
 					make_focus()
-					selected_card = true
+					
 					
 					
 
