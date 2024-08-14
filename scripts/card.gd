@@ -17,7 +17,7 @@ var selected_card = false
 var drag_offset = Vector2()
 var selectable = true
 var touchable = true
-
+var front_sprite_path
 
 signal active_card(node)
 signal card_selected(node)
@@ -32,6 +32,11 @@ func set_selectable(val):
 var original_z_index
 var original_rotation
 var original_scale
+
+
+func _ready():
+	if not is_connected("input_event", Callable(self, "_on_input_event")):
+		connect("input_event", Callable(self, "_on_input_event"))	
 
 func move_card(dest, _rotate = null, _scale = null):
 		var tween = get_tree().create_tween()
@@ -83,50 +88,49 @@ func make_focus():
 		position_shift.y -= focus_move_on_y
 		if position == handposition:
 			move_card(position_shift, 0.0)
-		z_index = 2
+		
 		selected_card = true
 		emit_signal("active_card", self)
-		
+		emit_signal("add_to_stack", self)
 
 
 func off_focus():
 	if selectable:
 		move_card(handposition, handrotation)
-		z_index = 1
+		emit_signal("remove_from_stack", self)
 		selected_card = false
-		touchable = true
+		
 
 func make_active(card):
 	if card != self:
+		
 		off_focus()
+		
 
 func table_card(card):
 	if card == self:
-
 		emit_signal("add_to_stack", self)
 	
 	
-func _on_input_event(viewport, event, shape_idx):
+func _on_input_event(_viewport, event, _shape_idx):
+	if event is InputEventMouseButton || event is InputEventScreenTouch:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed || event.is_pressed():			
+			select_card()
+
+
+
+func select_card():
 	if touchable:
-		
-		if event is InputEventMouseButton || event is InputEventScreenTouch:
+		if selected_card:
 			
-			if selected_card:
-				if event.button_index == MOUSE_BUTTON_LEFT and event.pressed || event.is_pressed():
-					off_focus()
-					emit_signal("remove_from_stack", self)
-					selected_card = false
-					
-			elif !selected_card:
+			off_focus()
+			emit_signal("remove_from_stack", self)
+			selected_card = false
 				
-				if  event.button_index == MOUSE_BUTTON_LEFT and event.pressed || event.is_pressed():
-					make_focus()
-					
-					
-					
-
-
-
+		elif !selected_card:
+			
+			selected_card = true
+			make_focus()
 
 #
 #func _on_input_event(viewport, event, shape_idx):

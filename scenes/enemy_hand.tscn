@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://bps37tnabi0pf"]
+
+[ext_resource type="PackedScene" uid="uid://bw78j4fblf4y5" path="res://scenes/hand.tscn" id="1_4m5db"]
+[ext_resource type="Script" path="res://scripts/enemy_hand.gd" id="1_xg6l7"]
+
+[sub_resource type="Curve2D" id="Curve2D_180t6"]
+_data = {
+"points": PackedVector2Array(-20.6534, 0.0366085, 20.6534, -0.0366085, 251.851, 301.508, 0, 0, 0, 0, 1390.65, 301.508)
+}
+point_count = 2
+
+[node name="EnemyHand" groups=["players"] instance=ExtResource("1_4m5db")]
+script = ExtResource("1_xg6l7")
+
+[node name="Path2D" parent="." index="0"]
+position = Vector2(197, -551.021)
+scale = Vector2(0.365296, 1.83086)
+curve = SubResource("Curve2D_180t6")
+
+[node name="PathFollow2D" parent="Path2D" index="0"]
+position = Vector2(251.851, 301.508)
+rotation = -0.00177313
+
+[node name="DeckLocation" parent="." index="1"]
+position = Vector2(476, -26)

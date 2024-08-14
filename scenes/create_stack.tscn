@@ -1,8 +1,0 @@
-[gd_scene format=3 uid="uid://803qs6qmb16j"]
-
-[node name="CreateStack" type="Button"]
-offset_right = 120.0
-offset_bottom = 52.0
-theme_override_colors/font_color = Color(0.973535, 0.973535, 0.973535, 1)
-theme_override_font_sizes/font_size = 15
-text = "Create Stack"

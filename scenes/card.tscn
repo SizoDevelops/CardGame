@@ -20,5 +20,3 @@ texture = ExtResource("2_7hjl8")
 z_as_relative = false
 use_parent_material = true
 shape = SubResource("RectangleShape2D_yu3td")
-
-[connection signal="input_event" from="." to="." method="_on_input_event"]

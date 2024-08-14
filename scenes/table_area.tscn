@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://d0diym2na8uvc" path="res://other/button_unclicked.png" id="2_bn818"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_op6u8"]
-size = Vector2(45, 16)
+size = Vector2(46.9615, 16)
 
 [node name="TableArea" type="Area2D"]
 position = Vector2(-1, -2)
@@ -14,14 +14,15 @@ script = ExtResource("1_js0a6")
 [node name="ButtonUnclicked" type="Sprite2D" parent="."]
 light_mask = 512
 visibility_layer = 512
-z_index = 544
-position = Vector2(0.538462, -50.25)
-scale = Vector2(0.448718, 0.448718)
+z_index = -1
+texture_filter = 1
+position = Vector2(-1.5, -49)
+scale = Vector2(0.297468, 0.2)
 texture = ExtResource("2_bn818")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-z_index = 600
-position = Vector2(0.538462, -50.25)
+z_index = -1
+position = Vector2(-1.48077, -49.25)
 shape = SubResource("RectangleShape2D_op6u8")
 
 [node name="Add" type="Sprite2D" parent="."]
@@ -31,7 +32,6 @@ scale = Vector2(0.649038, 0.649038)
 texture = ExtResource("1_gupju")
 
 [node name="Area" type="Marker2D" parent="."]
-position = Vector2(0, 2)
 
 [node name="HSlider" type="HSlider" parent="."]
 visible = false
@@ -42,6 +42,8 @@ offset_bottom = 3.0
 max_value = 10.0
 
 [node name="Label" type="Label" parent="."]
+z_index = -1
+z_as_relative = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -54,4 +56,5 @@ horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
 
+[connection signal="id_set" from="." to="." method="_on_id_set"]
 [connection signal="input_event" from="." to="." method="_on_input_event"]

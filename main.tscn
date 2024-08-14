@@ -1,16 +1,18 @@
-[gd_scene load_steps=7 format=3 uid="uid://cjsbc70scgaim"]
+[gd_scene load_steps=8 format=3 uid="uid://cjsbc70scgaim"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_0eybj"]
 [ext_resource type="PackedScene" uid="uid://cu8e27au77gw2" path="res://scenes/deck.tscn" id="2_po84e"]
 [ext_resource type="Texture2D" uid="uid://8pflyos8manu" path="res://other/floor.png" id="3_4x4e4"]
 [ext_resource type="PackedScene" uid="uid://bw78j4fblf4y5" path="res://scenes/hand.tscn" id="5_14jiv"]
 [ext_resource type="PackedScene" uid="uid://v4uc7jp78lm0" path="res://scenes/table.tscn" id="5_drpjd"]
-[ext_resource type="PackedScene" uid="uid://dbeh2b6r8kfks" path="res://scenes/table_area.tscn" id="6_mr4ny"]
+[ext_resource type="PackedScene" uid="uid://bps37tnabi0pf" path="res://scenes/enemy_hand.tscn" id="6_d2vf2"]
+[ext_resource type="PackedScene" uid="uid://803qs6qmb16j" path="res://scenes/change_turn.tscn" id="8_ohytd"]
 
 [node name="MAIN" type="Node2D"]
 script = ExtResource("1_0eybj")
 
 [node name="Floor" type="Sprite2D" parent="."]
+z_index = -115
 position = Vector2(467, 215)
 texture = ExtResource("3_4x4e4")
 
@@ -19,58 +21,19 @@ texture = ExtResource("3_4x4e4")
 [node name="Deck" parent="Controller" instance=ExtResource("2_po84e")]
 
 [node name="Table" parent="Controller" instance=ExtResource("5_drpjd")]
-position = Vector2(466, 216)
+position = Vector2(466, 167)
 
 [node name="PlayerHand" parent="Controller" groups=["players"] instance=ExtResource("5_14jiv")]
-position = Vector2(-1, -1)
+position = Vector2(-2, 4)
 
-[node name="TableArea" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(230, 111)
+[node name="EnemyHand" parent="Controller" instance=ExtResource("6_d2vf2")]
+position = Vector2(-1, 2)
 
-[node name="TableArea3" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(717, 220)
+[node name="TableAreas" type="Node" parent="Controller"]
 
-[node name="TableArea4" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(615, 220)
+[node name="ChangeTurn" parent="Controller" instance=ExtResource("8_ohytd")]
+position = Vector2(195, 298)
 
-[node name="TableArea5" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(505, 221)
+[node name="Stores" type="Node" parent="Controller"]
 
-[node name="TableArea6" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(389, 220)
-
-[node name="TableArea7" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(677, 108)
-
-[node name="TableArea8" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(555, 110)
-
-[node name="TableArea9" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(446, 109)
-
-[node name="TableArea10" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(337, 110)
-
-[node name="TableArea11" parent="Controller" instance=ExtResource("6_mr4ny")]
-position = Vector2(263, 220)
-
-[connection signal="id_set" from="Controller/TableArea" to="Controller/PlayerHand" method="_on_table_area_id_set"]
-[connection signal="input_event" from="Controller/TableArea" to="Controller/PlayerHand" method="_on_table_area_input_event"]
-[connection signal="id_set" from="Controller/TableArea3" to="Controller/PlayerHand" method="_on_table_area_id_set"]
-[connection signal="input_event" from="Controller/TableArea3" to="Controller/PlayerHand" method="_on_table_area_input_event"]
-[connection signal="id_set" from="Controller/TableArea4" to="Controller/PlayerHand" method="_on_table_area_id_set"]
-[connection signal="input_event" from="Controller/TableArea4" to="Controller/PlayerHand" method="_on_table_area_input_event"]
-[connection signal="id_set" from="Controller/TableArea5" to="Controller/PlayerHand" method="_on_table_area_id_set"]
-[connection signal="input_event" from="Controller/TableArea5" to="Controller/PlayerHand" method="_on_table_area_input_event"]
-[connection signal="id_set" from="Controller/TableArea6" to="Controller/PlayerHand" method="_on_table_area_id_set"]
-[connection signal="input_event" from="Controller/TableArea6" to="Controller/PlayerHand" method="_on_table_area_input_event"]
-[connection signal="id_set" from="Controller/TableArea7" to="Controller/PlayerHand" method="_on_table_area_id_set"]
-[connection signal="input_event" from="Controller/TableArea7" to="Controller/PlayerHand" method="_on_table_area_input_event"]
-[connection signal="id_set" from="Controller/TableArea8" to="Controller/PlayerHand" method="_on_table_area_id_set"]
-[connection signal="input_event" from="Controller/TableArea8" to="Controller/PlayerHand" method="_on_table_area_input_event"]
-[connection signal="id_set" from="Controller/TableArea9" to="Controller/PlayerHand" method="_on_table_area_id_set"]
-[connection signal="input_event" from="Controller/TableArea9" to="Controller/PlayerHand" method="_on_table_area_input_event"]
-[connection signal="id_set" from="Controller/TableArea10" to="Controller/PlayerHand" method="_on_table_area_id_set"]
-[connection signal="input_event" from="Controller/TableArea10" to="Controller/PlayerHand" method="_on_table_area_input_event"]
-[connection signal="id_set" from="Controller/TableArea11" to="Controller/PlayerHand" method="_on_table_area_id_set"]
-[connection signal="input_event" from="Controller/TableArea11" to="Controller/PlayerHand" method="_on_table_area_input_event"]
+[connection signal="change_turn" from="Controller/ChangeTurn" to="." method="_on_change_turn_change_turn"]
