@@ -1,24 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://qhslm7uj81rj"]
+[gd_scene load_steps=6 format=3 uid="uid://qhslm7uj81rj"]
 
 [ext_resource type="Texture2D" uid="uid://d11u15ru5h0ee" path="res://other/frame.png" id="1_13iwa"]
 [ext_resource type="Texture2D" uid="uid://d0diym2na8uvc" path="res://other/button_unclicked.png" id="1_gfu61"]
 [ext_resource type="Script" path="res://scripts/player_store.gd" id="1_r03w0"]
+[ext_resource type="Texture2D" uid="uid://bvmvtvso633uf" path="res://other/stack.png" id="4_2ra86"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_23nsv"]
-size = Vector2(96, 31.75)
+size = Vector2(64, 31.75)
 
 [node name="PlayerStore" type="Area2D"]
 script = ExtResource("1_r03w0")
 
 [node name="ButtonUnclicked" type="Sprite2D" parent="."]
-z_index = -45
-position = Vector2(0.490612, -48.125)
-scale = Vector2(0.601147, 0.396875)
+z_index = -30
+position = Vector2(-3, -58.125)
+scale = Vector2(0.405063, 0.396875)
 texture = ExtResource("1_gfu61")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-z_index = -10
-position = Vector2(-0.0187652, -47.875)
+position = Vector2(-3, -58.125)
 shape = SubResource("RectangleShape2D_23nsv")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -29,5 +29,12 @@ scale = Vector2(1.20863, 1.32392)
 texture = ExtResource("1_13iwa")
 
 [node name="StorePosition" type="Marker2D" parent="."]
+
+[node name="Stack" type="Sprite2D" parent="."]
+visible = false
+z_index = -40
+position = Vector2(-2, 1)
+scale = Vector2(0.0775894, 0.0757576)
+texture = ExtResource("4_2ra86")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]

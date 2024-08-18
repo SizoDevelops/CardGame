@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://8pflyos8manu" path="res://other/floor.png" id="3_4x4e4"]
 [ext_resource type="PackedScene" uid="uid://bw78j4fblf4y5" path="res://scenes/hand.tscn" id="5_14jiv"]
 [ext_resource type="PackedScene" uid="uid://v4uc7jp78lm0" path="res://scenes/table.tscn" id="5_drpjd"]
-[ext_resource type="PackedScene" uid="uid://bps37tnabi0pf" path="res://scenes/enemy_hand.tscn" id="6_d2vf2"]
+[ext_resource type="PackedScene" uid="uid://crc6k7l63fg0l" path="res://scenes/enemy_hand.tscn" id="6_d2vf2"]
 [ext_resource type="PackedScene" uid="uid://803qs6qmb16j" path="res://scenes/change_turn.tscn" id="8_ohytd"]
 
 [node name="MAIN" type="Node2D"]
@@ -21,13 +21,11 @@ texture = ExtResource("3_4x4e4")
 [node name="Deck" parent="Controller" instance=ExtResource("2_po84e")]
 
 [node name="Table" parent="Controller" instance=ExtResource("5_drpjd")]
-position = Vector2(466, 167)
+position = Vector2(463, 203)
 
 [node name="PlayerHand" parent="Controller" groups=["players"] instance=ExtResource("5_14jiv")]
-position = Vector2(-2, 4)
 
 [node name="EnemyHand" parent="Controller" instance=ExtResource("6_d2vf2")]
-position = Vector2(-1, 2)
 
 [node name="TableAreas" type="Node" parent="Controller"]
 

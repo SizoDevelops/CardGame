@@ -1,14 +1,13 @@
 [gd_scene load_steps=5 format=3 uid="uid://dbeh2b6r8kfks"]
 
-[ext_resource type="Texture2D" uid="uid://bpb6fkiwam5av" path="res://other/add.png" id="1_gupju"]
 [ext_resource type="Script" path="res://scripts/table_area.gd" id="1_js0a6"]
 [ext_resource type="Texture2D" uid="uid://d0diym2na8uvc" path="res://other/button_unclicked.png" id="2_bn818"]
+[ext_resource type="Texture2D" uid="uid://bvmvtvso633uf" path="res://other/stack.png" id="3_tjlrw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_op6u8"]
-size = Vector2(46.9615, 16)
+size = Vector2(52, 25.05)
 
 [node name="TableArea" type="Area2D"]
-position = Vector2(-1, -2)
 script = ExtResource("1_js0a6")
 
 [node name="ButtonUnclicked" type="Sprite2D" parent="."]
@@ -16,20 +15,14 @@ light_mask = 512
 visibility_layer = 512
 z_index = -1
 texture_filter = 1
-position = Vector2(-1.5, -49)
-scale = Vector2(0.297468, 0.2)
+position = Vector2(1.54972e-06, -53.5)
+scale = Vector2(0.329114, 0.3125)
 texture = ExtResource("2_bn818")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 z_index = -1
-position = Vector2(-1.48077, -49.25)
+position = Vector2(-9.53674e-07, -53.475)
 shape = SubResource("RectangleShape2D_op6u8")
-
-[node name="Add" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(0, 1)
-scale = Vector2(0.649038, 0.649038)
-texture = ExtResource("1_gupju")
 
 [node name="Area" type="Marker2D" parent="."]
 
@@ -42,19 +35,29 @@ offset_bottom = 3.0
 max_value = 10.0
 
 [node name="Label" type="Label" parent="."]
-z_index = -1
-z_as_relative = false
+visible = false
+modulate = Color(6.257e-06, 0.97232, 0.632366, 1)
+z_index = -15
+texture_filter = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -19.0
-offset_top = -84.0
-offset_right = 21.0
-offset_bottom = -61.0
+offset_left = -22.0
+offset_top = -95.0
+offset_right = 18.0
+offset_bottom = -60.0
 grow_horizontal = 2
+size_flags_horizontal = 4
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
+
+[node name="Stack" type="Sprite2D" parent="."]
+visible = false
+z_index = -40
+position = Vector2(-2, 0.999997)
+scale = Vector2(0.0775894, 0.0757576)
+texture = ExtResource("3_tjlrw")
 
 [connection signal="id_set" from="." to="." method="_on_id_set"]
 [connection signal="input_event" from="." to="." method="_on_input_event"]

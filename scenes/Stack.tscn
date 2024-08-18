@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://fmk58j1ls5nk"]
+
+[ext_resource type="Texture2D" uid="uid://bvmvtvso633uf" path="res://other/stack.png" id="1_56f2u"]
+[ext_resource type="Script" path="res://scripts/card.gd" id="1_xl0jo"]
+
+[node name="Stack" type="Node"]
+script = ExtResource("1_xl0jo")
+
+[node name="Stack" type="Sprite2D" parent="."]
+z_index = -20
+position = Vector2(0.0539984, 0)
+scale = Vector2(0.125849, 0.126)
+texture = ExtResource("1_56f2u")

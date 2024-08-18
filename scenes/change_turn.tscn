@@ -1,20 +1,21 @@
 [gd_scene load_steps=4 format=3 uid="uid://803qs6qmb16j"]
 
 [ext_resource type="Script" path="res://scripts/change_turn.gd" id="1_stb38"]
-[ext_resource type="Texture2D" uid="uid://d0diym2na8uvc" path="res://other/button_unclicked.png" id="1_t7vd0"]
+[ext_resource type="Texture2D" uid="uid://d0hf0ef0hjh37" path="res://other/turn.png" id="2_fl25v"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5euda"]
-size = Vector2(72, 31)
+[sub_resource type="CircleShape2D" id="CircleShape2D_do64d"]
+radius = 24.4182
 
 [node name="ChangeTurn" type="Area2D"]
 script = ExtResource("1_stb38")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -0.5)
-shape = SubResource("RectangleShape2D_5euda")
+shape = SubResource("CircleShape2D_do64d")
 
-[node name="ButtonUnclicked" type="Sprite2D" parent="."]
-scale = Vector2(0.449367, 0.3875)
-texture = ExtResource("1_t7vd0")
+[node name="Turn" type="Sprite2D" parent="."]
+texture_filter = 1
+texture_repeat = 1
+scale = Vector2(0.505464, 0.505464)
+texture = ExtResource("2_fl25v")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]

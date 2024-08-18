@@ -7,10 +7,11 @@ var area_id = ""
 @onready var position_node = $Area
 @onready var h_slider = $HSlider
 @onready var label = $Label
+@onready var stack = $Stack
 
 
 
-signal  id_set(id, node, slider)
+signal  id_set(id, node, slider, label_node)
 var stack_size = 0
 
 func _ready():
@@ -21,7 +22,10 @@ func _ready():
 func _on_HSlider_value_changed(value):
 	# Update the label with the current value of the slider
 	label.text = str(value)
-	stack_size = value
+	if value == 0:
+		label.visible = false
+	else:
+		label.visible = true
 
 func _on_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:
@@ -30,4 +34,4 @@ func _on_input_event(_viewport, event, _shape_idx):
 			
 
 func select_player_area():
-	emit_signal("id_set", area_id, position_node, h_slider)
+	emit_signal("id_set", area_id, position_node, h_slider, label)

@@ -1,5 +1,7 @@
 extends Area2D
 
+@onready var stack = $Stack
+
 var area_id = ""
 signal  id_set(id, node)
 

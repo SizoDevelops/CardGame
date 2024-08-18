@@ -4,25 +4,25 @@
 
 [sub_resource type="Curve2D" id="Curve2D_pd5j7"]
 _data = {
-"points": PackedVector2Array(-9.86248, 2.19563, 9.86248, -2.19563, 296.623, 302.329, -214.161, -82.0235, 214.161, 82.0235, 762, 324)
+"points": PackedVector2Array(-2.29479, 0.258068, 2.29479, -0.258068, 295.583, 305.605, -214.897, -53.6356, 214.897, 53.6356, 762, 324)
 }
 point_count = 2
 
 [node name="PlayerHand" type="Node2D"]
-position = Vector2(-1, 1)
 script = ExtResource("1_xdbo2")
 
 [node name="Path2D" type="Path2D" parent="."]
-position = Vector2(6, 0)
+position = Vector2(-9, -1)
 scale = Vector2(0.960814, 1.22053)
 curve = SubResource("Curve2D_pd5j7")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
-position = Vector2(296.623, 302.329)
-rotation = -0.219051
+position = Vector2(295.583, 305.605)
+rotation = -0.111982
 
 [node name="DeckSpawner" type="Marker2D" parent="Path2D/PathFollow2D"]
+z_as_relative = false
 position = Vector2(0.922998, 0.480926)
 
 [node name="DeckLocation" type="Marker2D" parent="."]
-position = Vector2(509, 425)
+position = Vector2(473, 348)

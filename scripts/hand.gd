@@ -6,15 +6,10 @@ class_name PlayerHand
 var hand = []
 var card_path = "res://PNG/"
 var card_width
-
 @export var card_scale = Vector2(0.7, 0.7)
-
-
-
 var selected_card = null
-
 var player_id = ""
-
+var player_pile = {"id": "", "cards": []}
 
 func _ready():
 	# Create an instance of the RandomNumberGenerator
@@ -23,7 +18,7 @@ func _ready():
 	# Seed the generator with the system's entropy for more unpredictability
 	rand.randomize()
 	player_id = generate_random_id(rand)
-
+	player_pile["id"] = player_id
 	# Generate a random ID
 # Function to generate a random ID string
 func generate_random_id(rng):
@@ -99,7 +94,7 @@ func place_cards():
 		return
 		
 	card_width = hand[0].card_width()  # Assuming all cards have the same width
-	ideal_cardwidth = card_width * 0.7
+	ideal_cardwidth = card_width * 0.5
 	hand_width = ideal_cardwidth * hand.size()
 
 	# Ensure cards are not already added
@@ -144,10 +139,6 @@ func remove_card(card):
 	hand.erase(card)
 	place_cards()
 	
-
-
-
-
 func give_hand():
 	return hand
 	

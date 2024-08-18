@@ -28,10 +28,7 @@ signal remove_from_stack(node)
 func set_selectable(val):
 	selectable = val
 
-# Store original properties
-var original_z_index
-var original_rotation
-var original_scale
+
 
 
 func _ready():
@@ -44,15 +41,12 @@ func move_card(dest, _rotate = null, _scale = null):
 		tween.tween_property(self, "position", dest, 0.5 ).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 		if _scale != null:
 			#tween.tween_property(self, "scale", scale, _scale, 0.5, Tween.TRANS_BACK, Tween.EASE_OUT)
-			tween.tween_property(self, "scale", _scale, 0.5 ).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+			tween.tween_property(self, "scale", _scale, 0.2 ).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 		if _rotate != null:
-
-			tween.tween_property(self, "rotation", _rotate, 0.2 ).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN)
+			tween.tween_property(self, "rotation", _rotate, 0.1 ).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN)
 			
 		
-		original_z_index = z_index
-		original_rotation = rotation
-		original_scale = scale	
+
 		
 
 
@@ -72,11 +66,11 @@ func kill_card():
 
 
 
-func stack_on_card(card):
+func stack_on_card():
 	stacked = true
 	# Adjust position to stack on top of the other card
-	global_position = card.global_position
-	z_index = card.z_index + 1
+	global_position = self.global_position
+	z_index = self.z_index + 1
 
 func set_on_table(value):
 	on_table = value
@@ -99,6 +93,7 @@ func off_focus():
 		move_card(handposition, handrotation)
 		emit_signal("remove_from_stack", self)
 		selected_card = false
+		
 		
 
 func make_active(card):
