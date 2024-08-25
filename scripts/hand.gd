@@ -11,6 +11,8 @@ var selected_card = null
 var player_id = ""
 var player_pile = {"id": "", "cards": []}
 
+signal hand_empty
+
 func _ready():
 	# Create an instance of the RandomNumberGenerator
 	var rand = RandomNumberGenerator.new()
@@ -91,6 +93,7 @@ func place_cards():
 
 	# Calculate ideal card width and hand width
 	if hand.size() == 0:
+		emit_signal("hand_empty")
 		return
 		
 	card_width = hand[0].card_width()  # Assuming all cards have the same width

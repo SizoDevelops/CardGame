@@ -9,6 +9,8 @@ size = Vector2(80, 133)
 
 [node name="Card" type="Area2D"]
 script = ExtResource("1_blw7g")
+cardsprite = ExtResource("2_7hjl8")
+focus_move_on_y = 20
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, 1.37)

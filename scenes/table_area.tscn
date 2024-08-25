@@ -53,9 +53,8 @@ vertical_alignment = 1
 clip_text = true
 
 [node name="Stack" type="Sprite2D" parent="."]
-visible = false
 z_index = -40
-position = Vector2(-2, 0.999997)
+position = Vector2(-0.94, 1.985)
 scale = Vector2(0.0775894, 0.0757576)
 texture = ExtResource("3_tjlrw")
 

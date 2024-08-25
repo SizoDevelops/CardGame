@@ -4,7 +4,7 @@
 
 [sub_resource type="Curve2D" id="Curve2D_pd5j7"]
 _data = {
-"points": PackedVector2Array(-2.29479, 0.258068, 2.29479, -0.258068, 295.583, 305.605, -214.897, -53.6356, 214.897, 53.6356, 762, 324)
+"points": PackedVector2Array(-130.106, 18.8585, 130.106, -18.8585, 291.42, 307.244, -161.91, -19.8339, 161.91, 19.8339, 760.813, 305.605)
 }
 point_count = 2
 
@@ -12,17 +12,17 @@ point_count = 2
 script = ExtResource("1_xdbo2")
 
 [node name="Path2D" type="Path2D" parent="."]
-position = Vector2(-9, -1)
+position = Vector2(-11, 12)
 scale = Vector2(0.960814, 1.22053)
 curve = SubResource("Curve2D_pd5j7")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
-position = Vector2(295.583, 305.605)
-rotation = -0.111982
+position = Vector2(291.42, 307.244)
+rotation = -0.143945
 
 [node name="DeckSpawner" type="Marker2D" parent="Path2D/PathFollow2D"]
 z_as_relative = false
 position = Vector2(0.922998, 0.480926)
 
 [node name="DeckLocation" type="Marker2D" parent="."]
-position = Vector2(473, 348)
+position = Vector2(41, 89)
