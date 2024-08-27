@@ -50,34 +50,16 @@ var game_round = 1
 var captured = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	players = [player.player_id, enemy_hand.player_id]
 	player_hand = player
 	enemy = enemy_hand
 	for i in range(10):
 		rand.randomize()
 		area_ids.append(generate_random_id(rand))
 	set_table_areas()
-	
-	if game_round == 1 :
-		await get_tree().create_timer(.5).timeout
-		get_tree().call_group("players", "draw_cards", 2)
-		await get_tree().create_timer(.5).timeout
-		get_tree().call_group("players", "draw_cards", 2)
-		await get_tree().create_timer(.5).timeout
-		get_tree().call_group("players", "draw_cards", 2)
-		await get_tree().create_timer(.5).timeout
-		get_tree().call_group("players", "draw_cards", 2)
-		await get_tree().create_timer(.5).timeout
-		get_tree().call_group("players", "draw_cards", 2)
-		
+	players = [player.player_id, enemy_hand.player_id]
+
+	initialize_round()
 	player_piles()
-	
-	connect_hand(player.hand)
-	connect_hand(enemy_hand.hand)
-	
-	deck_stack.visible = false
-	for card in enemy_hand.hand:
-		card.touchable = false
 
 func connect_hand(hand):
 	
@@ -130,7 +112,8 @@ func player_piles():
 	
 	
 func _on_table_area_id_set(id, node, slider, label):
-	play_hand(id, node, slider, label)
+	table_card_pos = node.get_global_position()
+	play_hand(id, table_card_pos, slider, label)
 	
 
 func _process(_delta):
@@ -139,6 +122,7 @@ func _process(_delta):
 	hide_show_player_stacks()
 	if captured == true:
 		change_turn()
+	
 
 func hide_show_table_areas():
 	for pi in table_areas:
@@ -179,27 +163,25 @@ func hide_show_player_stacks():
 			else: 
 				pile["stack"].stack.visible = true
 
-func play_hand(id, node,slider, label):
-	
-	table_card_pos = node.get_global_position()
+func play_hand(id, pos,slider, label):
 	
 	# Place card on table id theres only one card selected  and that card or a card of the same value is not on the table
-	if stack_holder.size() == 1  and !has_stack() and !card_in_pile(stack_holder[0]) and !has_build() and !is_position_occupied(table_card_pos):
+	if stack_holder.size() == 1  and !has_stack() and !card_in_pile(stack_holder[0]) and build_count() < 1  and !is_position_occupied(pos) and build_count() < 2:
 		slider.value = total
 		#print(player_hand.player_pile["cards"])
 		stacks_to_capture.clear()
 		for card in sorted_stack(stack_holder):
-			add_card(card, id, slider.value, table_card_pos)
+			add_card(card, id, slider.value, pos)
 	
 # Place card if only one card selected and that card is onready on the table and you have the same value card on hand meaning stack
-	elif stack_holder.size() == 1 and has_stack() and can_steal(stack_holder[0], id) and hand_has_card() and is_position_occupied((table_card_pos)):
+	elif stack_holder.size() == 1 and has_stack() and can_steal(stack_holder[0], id) and hand_has_card() and is_position_occupied((pos)):
 		slider.value = total
 		#print("Called")
 		stacks_to_capture.clear()
 		var store = []
 		
 		for card in sorted_stack(stack_holder):
-			add_card(card, id, slider.value, table_card_pos)
+			add_card(card, id, slider.value, pos)
 			
 # Add all the same value cards to from the hand to a temp store
 		for cards in player_hand.hand:
@@ -210,19 +192,19 @@ func play_hand(id, node,slider, label):
 		auto_capture(store, id)
 		
 # Prevents creating multiple identical stack
-	elif stack_holder.size() > 1  and hand_has_card() and !has_stack() and has_permission(table_card_pos):
+	elif stack_holder.size() > 1  and hand_has_card() and !has_stack() and has_permission(pos):
 		slider.value = total
 		print("Called")
 		stacks_to_capture.clear()
 		for card in sorted_stack(stack_holder):
-			add_card(card, id, slider.value, table_card_pos)
+			add_card(card, id, slider.value, pos)
 			
-	elif stack_holder.size() > 1 and hand_has_card() and has_stack() and is_position_occupied(table_card_pos) and has_permission(table_card_pos):
+	elif stack_holder.size() > 1 and hand_has_card() and has_stack() and is_position_occupied(pos) and has_permission(pos):
 		slider.value = total
 		stacks_to_capture.clear()
 		#print("Here")
 		for card in sorted_stack(stack_holder):
-			add_card(card, id, slider.value, table_card_pos)	
+			add_card(card, id, slider.value, pos)	
 			
 	else:
 		for card in player_hand.hand:
@@ -233,9 +215,11 @@ func play_hand(id, node,slider, label):
 		for card in enemy.player_pile["cards"]:
 			card.off_focus()
 	
-
+	for card in stack_holder:
+		remove_from_pile(card)
+		
 	stack_holder.clear()
-	print(table_holder)
+	print(enemy.player_pile["cards"])
 	player_hand.selected_card = null
 	
 # Check if theres a pile or stack of the same value
@@ -245,13 +229,18 @@ func has_stack():
 			return true
 	return false
 	
-
+func remove_from_pile(card):
+	for card_ in enemy.player_pile["cards"]:
+		if card_ == card:
+			enemy.player_pile["cards"].erase(card)
 #Check if player has build on the table
-func has_build():
+func build_count():
+	var count = 0
 	for stack in table_holder:
 		if stack["owner"] == player_hand.player_id:
-			return true
-	return false
+			count += 1
+	return count
+	
 	
 func has_permission(pos):
 	for card in stack_holder:
@@ -270,13 +259,14 @@ func card_in_pile(card):
 	return false
 
 func auto_capture(store, id):
-	if store.size()>0 || !has_build():
+	
+	if store.size() > 0 :
 		for sta in table_holder:
-			if sta["owner"] == enemy.player_id and sta["id"] == id:
-				
+			if (sta["owner"] == enemy.player_id || build_count() > 1)  and sta["id"] == id:
 				stacks_to_capture.append(sta)
 				move_to_pile(player_hand.player_id, find_object_by_id(player_hand.player_id)["pos"])
-			elif sta["id"] == id:
+				
+			elif sta["id"] == id and build_count() <= 1:
 				stacks_to_capture.append(sta)
 	else: 
 		for sta in table_holder:
@@ -358,12 +348,12 @@ func add_card(card, id, value, pos):
 # Create an unsorted copy of the stack to check if it's augumented or not
 
 # Move card to the correct position
-	card.move_card(table_card_pos, 0.0, Vector2(0.6, 0.6))
+	card.move_card(pos, 0.0, Vector2(0.6, 0.6))
 
 	
 	
 # Update the position of the card in case a move is invalid
-	card.handposition = table_card_pos
+	card.handposition = pos
 	card.handrotation = 0.0
 # Unselect the card
 	card.selected_card = false
@@ -544,31 +534,64 @@ func change_turn():
 			card.touchable = true
 		
 		current_turn = 2
+	play_ai_move()
 		
 	captured = false
 
 #AI Logic
 
-
+func initialize_round():
+	if game_round <= 2 :
+		deck_stack.visible = true
+		await get_tree().create_timer(.5).timeout
+		get_tree().call_group("players", "draw_cards", 2)
+		await get_tree().create_timer(.5).timeout
+		get_tree().call_group("players", "draw_cards", 2)
+		await get_tree().create_timer(.5).timeout
+		get_tree().call_group("players", "draw_cards", 2)
+		await get_tree().create_timer(.5).timeout
+		get_tree().call_group("players", "draw_cards", 2)
+		await get_tree().create_timer(.5).timeout
+		get_tree().call_group("players", "draw_cards", 2)
+		
+		
+		connect_hand(player.hand)
+		connect_hand(enemy_hand.hand)
+		
+		deck_stack.visible = false
+		for card in enemy_hand.hand:
+			card.touchable = false
+		game_round += 1
+		
+	else: 
+		print("Game Over")
+		
 
 func _on_enemy_hand_hand_empty():
-	deck_stack.visible = true
-	player_hand = player
-	enemy = enemy_hand
-	if game_round == 2:
-		await get_tree().create_timer(.5).timeout
-		get_tree().call_group("players", "draw_cards", 2)
-		await get_tree().create_timer(.5).timeout
-		get_tree().call_group("players", "draw_cards", 2)
-		await get_tree().create_timer(.5).timeout
-		get_tree().call_group("players", "draw_cards", 2)
-		await get_tree().create_timer(.5).timeout
-		get_tree().call_group("players", "draw_cards", 2)
-		await get_tree().create_timer(.5).timeout
-		get_tree().call_group("players", "draw_cards", 2)
-	deck_stack.visible = false
-	for card in enemy_hand.hand:
-		card.touchable = false
+	initialize_round()
+	change_turn()
 
-func _on_player_hand_hand_empty():
-	game_round = 2
+
+# Implement AI
+func play_ai_move():
+	if current_turn == 2:
+		var random_card = player_hand.hand.pick_random()
+		var random_area = table_areas.pick_random()
+
+		random_card.select_card()
+
+		play_hand(random_area.area_id, random_area.position_node.get_global_position(), random_area.h_slider, random_area.label)
+		
+		
+		if hand_card_played:
+			random_card.change_sprite(random_card.front)
+			change_turn()
+			return
+	
+	
+	
+	
+	
+	
+	
+	

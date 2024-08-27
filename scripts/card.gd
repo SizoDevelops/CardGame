@@ -17,7 +17,7 @@ var selected_card = false
 var drag_offset = Vector2()
 var selectable = true
 var touchable = true
-var front_sprite_path
+var front
 
 signal active_card(node)
 signal card_selected(node)

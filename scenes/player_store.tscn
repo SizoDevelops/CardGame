@@ -31,6 +31,7 @@ texture = ExtResource("1_13iwa")
 [node name="StorePosition" type="Marker2D" parent="."]
 
 [node name="Stack" type="Sprite2D" parent="."]
+visible = false
 z_index = -40
 position = Vector2(-1.005, 1.975)
 scale = Vector2(0.0775894, 0.0757576)
