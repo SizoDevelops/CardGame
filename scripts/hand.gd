@@ -147,4 +147,6 @@ func give_hand():
 	
 
 
-	
+func sorted_hand():
+	hand.sort_custom(func(a, b): return a.cardvalue > b.cardvalue)
+	return hand

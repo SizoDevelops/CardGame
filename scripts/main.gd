@@ -113,7 +113,7 @@ func player_piles():
 	
 func _on_table_area_id_set(id, node, slider, label):
 	table_card_pos = node.get_global_position()
-	play_hand(id, table_card_pos, slider, label)
+	play_hand(id, table_card_pos, slider)
 	
 
 func _process(_delta):
@@ -163,10 +163,10 @@ func hide_show_player_stacks():
 			else: 
 				pile["stack"].stack.visible = true
 
-func play_hand(id, pos,slider, label):
+func play_hand(id, pos,slider):
 	
 	# Place card on table id theres only one card selected  and that card or a card of the same value is not on the table
-	if stack_holder.size() == 1  and !has_stack() and !card_in_pile(stack_holder[0]) and build_count() < 1  and !is_position_occupied(pos) and build_count() < 2:
+	if stack_holder.size() == 1  and !has_stack(total) and !card_in_pile(stack_holder) and build_count() < 1  and !is_position_occupied(pos) and build_count() < 2:
 		slider.value = total
 		#print(player_hand.player_pile["cards"])
 		stacks_to_capture.clear()
@@ -174,7 +174,7 @@ func play_hand(id, pos,slider, label):
 			add_card(card, id, slider.value, pos)
 	
 # Place card if only one card selected and that card is onready on the table and you have the same value card on hand meaning stack
-	elif stack_holder.size() == 1 and has_stack() and can_steal(stack_holder[0], id) and hand_has_card() and is_position_occupied((pos)):
+	elif stack_holder.size() == 1 and has_stack(total) and can_steal(stack_holder, pos) and hand_has_card() and is_position_occupied((pos)):
 		slider.value = total
 		#print("Called")
 		stacks_to_capture.clear()
@@ -192,14 +192,14 @@ func play_hand(id, pos,slider, label):
 		auto_capture(store, id)
 		
 # Prevents creating multiple identical stack
-	elif stack_holder.size() > 1  and hand_has_card() and !has_stack() and has_permission(pos):
+	elif stack_holder.size() > 1  and hand_has_card() and can_steal(stack_holder, pos) and !has_stack(total) and has_permission(pos):
 		slider.value = total
-		print("Called")
+		#print("Called")
 		stacks_to_capture.clear()
 		for card in sorted_stack(stack_holder):
 			add_card(card, id, slider.value, pos)
 			
-	elif stack_holder.size() > 1 and hand_has_card() and has_stack() and is_position_occupied(pos) and has_permission(pos):
+	elif stack_holder.size() > 1 and hand_has_card() and can_steal(stack_holder, pos) and has_stack(total) and is_position_occupied(pos) and has_permission(pos):
 		slider.value = total
 		stacks_to_capture.clear()
 		#print("Here")
@@ -219,13 +219,13 @@ func play_hand(id, pos,slider, label):
 		remove_from_pile(card)
 		
 	stack_holder.clear()
-	print(enemy.player_pile["cards"])
+
 	player_hand.selected_card = null
 	
 # Check if theres a pile or stack of the same value
-func has_stack():
+func has_stack(tot):
 	for stack in table_holder:
-		if stack["value"] == total:
+		if stack["value"] == tot:
 			return true
 	return false
 	
@@ -253,9 +253,10 @@ func has_permission(pos):
 			return true
 	return false
 
-func card_in_pile(card):
-	if card in enemy.player_pile["cards"]:
-		return true
+func card_in_pile(cards):
+	for card in cards:
+		if card in enemy.player_pile["cards"]:
+			return true
 	return false
 
 func auto_capture(store, id):
@@ -277,11 +278,11 @@ func auto_capture(store, id):
 		captured = true
 		
 
-func can_steal(card, stack_id):
+func can_steal(cards, pos):
 	for stack in table_holder:
-		if card_in_pile(card) and stack["id"] == stack_id and stack["value"] == card.cardvalue:
+		if card_in_pile(cards) and is_position_occupied(pos):
 			return true
-		elif !card_in_pile(card):
+		elif !card_in_pile(cards):
 			return true
 	return false
 
@@ -301,8 +302,11 @@ func hand_has_card():
 			return true
 	return false
 
-
-
+func player_build():
+	for stacks in table_holder:
+		if stacks["owner"] == player_hand.player_id:
+			return stacks["value"]
+	return null
 # Add and move card to the table
 func add_card(card, id, value, pos):
 #Move a card that's onlready on the table
@@ -486,6 +490,7 @@ func _add_to_stack(card):
 		temp += i.cardvalue
 	total = temp
 
+
 func _remove_from_stack(card):
 	stack_holder.erase(card)
 	var temp = 0
@@ -493,6 +498,7 @@ func _remove_from_stack(card):
 		temp += i.cardvalue
 	total = temp
 	player_hand.selected_card = null
+
 
 func _active_card(card):
 	for i in player_hand.hand.size():
@@ -572,26 +578,70 @@ func _on_enemy_hand_hand_empty():
 	change_turn()
 
 
-# Implement AI
 func play_ai_move():
+# Check valid moves
+	ai_valid_moves()
+
+func ai_valid_moves():
+	var moves = []
+	var priority_moves = []
+	var card_total = 0
 	if current_turn == 2:
-		var random_card = player_hand.hand.pick_random()
-		var random_area = table_areas.pick_random()
+# find duplicated cards
+		for i in player_hand.hand.size():
+			card_total = 0
+			var card = player_hand.hand[i]
+			for cards in player_hand.hand:
+				if card.cardvalue == cards.cardvalue:
+					card_total += 1
+					
+			if card_total > 1 and card.cardvalue not in priority_moves:
+				priority_moves.append(card.cardvalue)
 
-		random_card.select_card()
-
-		play_hand(random_area.area_id, random_area.position_node.get_global_position(), random_area.h_slider, random_area.label)
+		print(priority_moves)
+		
+	# pick cards that make up the largest priority move
+		var hold_values = []
+		for values in table_holder:
+			if values["owner"] != player_hand.player_id and values["build"] == "single":
+				hold_values.append({"value": values["value"], "stack":values["stack"]})
+				
 		
 		
-		if hand_card_played:
-			random_card.change_sprite(random_card.front)
-			change_turn()
-			return
+		var highest = priority_moves.max()
+		if highest < player_hand.sorted_hand()[0].cardvalue and !player_build():
+			highest = player_hand.sorted_hand()[0].cardvalue
+		elif player_build():
+			highest = player_build()
+		if enemy.player_pile["cards"].size() > 0 and has_stack(highest):
+			hold_values.append({"value": enemy.player_pile["cards"][enemy.player_pile["cards"].size() - 1].cardvalue, "stack": [enemy.player_pile["cards"][enemy.player_pile["cards"].size() - 1]]})	
+		var r = find_combinations_with_most_numbers(hold_values, highest)
+		print(r, "    ", highest)
+		
+
+func find_combinations_with_most_numbers(arr, max_sum):
+	arr.sort_custom(_compare_values)  # Sort the array based on the "value"
+	var all_combinations = {}
+
+	for target_sum in range(max_sum, 0, -1):
+		var result = []
+		_backtrack(arr, 0, [], target_sum, result)
+		if result.size() > 0:
+			all_combinations[target_sum] = result
+	return all_combinations
+
+func _backtrack(arr, start, path, target, result):
+	if target == 0:
+		result.append(path.duplicate())  # Add a copy of the current path to the result
+		return
 	
-	
-	
-	
-	
-	
-	
-	
+	for i in range(start, arr.size()):
+		if arr[i]["value"] > target:
+			break
+		# Recursively build the combination, ensuring each object is used only once
+		path.append(arr[i]["stack"])
+		_backtrack(arr, i + 1, path, target - arr[i]["value"], result)  # Move to the next index
+		path.pop_back()  # Remove the last element to backtrack
+
+func _compare_values(a, b):
+	return a["value"] - b["value"]
