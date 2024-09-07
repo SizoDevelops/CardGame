@@ -76,7 +76,7 @@ func initialize_cards():
 			secondpart = str(hand[i].cardsuit) + ".png"
 			
 		fullpart = firstpart + secondpart
-		
+		hand[i].front = card_path+fullpart
 		hand[i].change_sprite(card_path+fullpart)
 
 
@@ -101,7 +101,7 @@ func place_cards():
 	hand_width = ideal_cardwidth * hand.size()
 
 	# Ensure cards are not already added
-	for card in hand:
+	for card in sorted_hand():
 		if card.get_parent() != self:
 			add_child(card)
 

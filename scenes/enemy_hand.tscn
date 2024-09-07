@@ -11,7 +11,7 @@ point_count = 2
 
 [node name="EnemyHand" groups=["players"] instance=ExtResource("1_4m5db")]
 script = ExtResource("1_xg6l7")
-card_scale = Vector2(0.5, 0.5)
+card_scale = Vector2(0.4, 0.4)
 
 [node name="Path2D" parent="." index="0"]
 position = Vector2(-179, -146)

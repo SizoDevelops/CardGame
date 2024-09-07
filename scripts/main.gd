@@ -117,20 +117,17 @@ func _on_table_area_id_set(id, node, slider, label):
 	
 
 func _process(_delta):
-	hide_show_table_areas()
 	is_stackable()
-	hide_show_player_stacks()
 	if captured == true:
 		change_turn()
+	hide_show_player_stacks()
+	hide_show_table_areas()
 	
-
 func hide_show_table_areas():
 	for pi in table_areas:
+		
 		for stack in table_holder:
-			if stack_holder.size() > 0:
-				pi.visible = true
-			
-			elif stack["stack"].size() > 1 and stack["id"] == pi.area_id:
+			if stack["stack"].size() > 1 and stack["id"] == pi.area_id:
 				pi.visible = true
 				pi.stack.visible = true
 				break
@@ -143,6 +140,9 @@ func hide_show_table_areas():
 		if table_holder.size() == 0:
 			pi.stack.visible = false
 			
+		if stack_holder.size() > 0:
+				pi.visible = true
+				
 			
 func hide_show_player_stacks():
 	for card in enemy.player_pile["cards"]:
@@ -162,7 +162,9 @@ func hide_show_player_stacks():
 				pile["stack"].stack.visible = false
 			else: 
 				pile["stack"].stack.visible = true
-
+				
+				
+				
 func play_hand(id, pos,slider):
 	
 	# Place card on table id theres only one card selected  and that card or a card of the same value is not on the table
@@ -174,7 +176,7 @@ func play_hand(id, pos,slider):
 			add_card(card, id, slider.value, pos)
 	
 # Place card if only one card selected and that card is onready on the table and you have the same value card on hand meaning stack
-	elif stack_holder.size() == 1 and has_stack(total) and can_steal(stack_holder, pos) and hand_has_card() and is_position_occupied((pos)):
+	elif stack_holder.size() == 1 and has_stack(total) and check_same_value(total, id) and can_steal(stack_holder, pos) and hand_has_card() and is_position_occupied((pos)):
 		slider.value = total
 		#print("Called")
 		stacks_to_capture.clear()
@@ -192,14 +194,14 @@ func play_hand(id, pos,slider):
 		auto_capture(store, id)
 		
 # Prevents creating multiple identical stack
-	elif stack_holder.size() > 1  and hand_has_card() and can_steal(stack_holder, pos) and !has_stack(total) and has_permission(pos):
+	elif stack_holder.size() > 1  and hand_has_card() and can_steal(stack_holder, pos) and !has_stack(total) and has_permission(pos) and !is_position_occupied(pos) and build_count() <= 1:
 		slider.value = total
 		#print("Called")
 		stacks_to_capture.clear()
 		for card in sorted_stack(stack_holder):
 			add_card(card, id, slider.value, pos)
 			
-	elif stack_holder.size() > 1 and hand_has_card() and can_steal(stack_holder, pos) and has_stack(total) and is_position_occupied(pos) and has_permission(pos):
+	elif stack_holder.size() > 1 and hand_has_card() and can_steal(stack_holder, pos) and has_stack(total) and is_position_occupied(pos) and has_permission(pos) and is_owner() and build_count() <= 1:
 		slider.value = total
 		stacks_to_capture.clear()
 		#print("Here")
@@ -240,8 +242,20 @@ func build_count():
 		if stack["owner"] == player_hand.player_id:
 			count += 1
 	return count
+
+func is_owner():
+	for builds in table_holder:
+		if builds["owner"] == player_hand.player_id || builds["owner"] == "":
+			return true
+		elif builds["owner"] == enemy.player_id:
+			return false
+	return true
 	
-	
+func check_same_value(tot, id):
+	for card in table_holder:
+		if card["value"] == tot and card["id"] == id:
+			return true
+	return false
 func has_permission(pos):
 	for card in stack_holder:
 		if card in enemy.player_pile["cards"] and is_position_occupied(pos):
@@ -260,13 +274,12 @@ func card_in_pile(cards):
 	return false
 
 func auto_capture(store, id):
-	
 	if store.size() > 0 :
 		for sta in table_holder:
 			if (sta["owner"] == enemy.player_id || build_count() > 1)  and sta["id"] == id:
 				stacks_to_capture.append(sta)
 				move_to_pile(player_hand.player_id, find_object_by_id(player_hand.player_id)["pos"])
-				
+				captured = true
 			elif sta["id"] == id and build_count() <= 1:
 				stacks_to_capture.append(sta)
 	else: 
@@ -307,13 +320,19 @@ func player_build():
 		if stacks["owner"] == player_hand.player_id:
 			return stacks["value"]
 	return null
+	
+func player_build_id():
+	for stacks in table_holder:
+		if stacks["owner"] == player_hand.player_id:
+			return stacks["id"]
+	return null
 # Add and move card to the table
 func add_card(card, id, value, pos):
 #Move a card that's onlready on the table
 	for stack in table_holder:
 		if card in stack["stack"]:
 			stack["stack"].erase(card)
-	
+
 # Add the card to the appropriate stack or create a new stack if it doesn't exist
 	var found_stack = false
 	for stack in table_holder:
@@ -352,6 +371,7 @@ func add_card(card, id, value, pos):
 # Create an unsorted copy of the stack to check if it's augumented or not
 
 # Move card to the correct position
+	card.change_sprite(card.front)
 	card.move_card(pos, 0.0, Vector2(0.6, 0.6))
 
 	
@@ -404,6 +424,7 @@ func move_to_pile(id, store):
 				
 		for cards in stacks_to_capture[0]["stack"]:
 			cards.move_card(store)
+			cards.change_sprite(cards.front)
 
 		stacks_to_capture.clear()
 		
@@ -538,9 +559,11 @@ func change_turn():
 			card.touchable = false
 		for card in enemy_hand.hand:
 			card.touchable = true
-		
+		await get_tree().create_timer(1).timeout
 		current_turn = 2
-	play_ai_move()
+		play_ai_move()
+	
+	
 		
 	captured = false
 
@@ -575,7 +598,7 @@ func initialize_round():
 
 func _on_enemy_hand_hand_empty():
 	initialize_round()
-	change_turn()
+	
 
 
 func play_ai_move():
@@ -586,8 +609,10 @@ func ai_valid_moves():
 	var moves = []
 	var priority_moves = []
 	var card_total = 0
+	
+	
+	
 	if current_turn == 2:
-# find duplicated cards
 		for i in player_hand.hand.size():
 			card_total = 0
 			var card = player_hand.hand[i]
@@ -597,28 +622,37 @@ func ai_valid_moves():
 					
 			if card_total > 1 and card.cardvalue not in priority_moves:
 				priority_moves.append(card.cardvalue)
-
-		print(priority_moves)
 		
 	# pick cards that make up the largest priority move
 		var hold_values = []
 		for values in table_holder:
-			if values["owner"] != player_hand.player_id and values["build"] == "single":
+			if values["owner"] != player_hand.player_id and values["build"] == "single" and values["value"] < 10:
 				hold_values.append({"value": values["value"], "stack":values["stack"]})
 				
 		
 		
-		var highest = priority_moves.max()
-		if highest < player_hand.sorted_hand()[0].cardvalue and !player_build():
-			highest = player_hand.sorted_hand()[0].cardvalue
+		var highest = 0
+		if player_hand.sorted_hand().size() > 0 and priority_moves.size() > 0 and  highest < priority_moves.max() and !player_build() and priority_moves.max() >= player_hand.sorted_hand()[0].cardvalue:
+			highest = priority_moves.max()
 		elif player_build():
 			highest = player_build()
+		elif player_hand.sorted_hand().size() > 0:
+			highest = player_hand.sorted_hand()[0].cardvalue
+		for stacks in table_holder:
+			if stacks["value"] == highest and stacks["owner"] == enemy.player_id:
+				highest = 0
+				break	
 		if enemy.player_pile["cards"].size() > 0 and has_stack(highest):
 			hold_values.append({"value": enemy.player_pile["cards"][enemy.player_pile["cards"].size() - 1].cardvalue, "stack": [enemy.player_pile["cards"][enemy.player_pile["cards"].size() - 1]]})	
 		var r = find_combinations_with_most_numbers(hold_values, highest)
-		print(r, "    ", highest)
 		
-
+		print(r, "    ", highest, " ------  ", priority_moves)
+		
+			
+		check_better_stack(r, player_hand.hand, highest)
+		
+		
+		
 func find_combinations_with_most_numbers(arr, max_sum):
 	arr.sort_custom(_compare_values)  # Sort the array based on the "value"
 	var all_combinations = {}
@@ -645,3 +679,189 @@ func _backtrack(arr, start, path, target, result):
 
 func _compare_values(a, b):
 	return a["value"] - b["value"]
+
+func _compare_array_length(a, b):
+	return a.size() > b.size()
+	
+func check_better_stack(moves, hand, target):
+	var possible = true
+	var hold = []
+	
+	if hold.size() == 0:
+		
+		for i in moves.keys().size():
+			for combo in moves[moves.keys()[i]]:
+# 10: [---[[@Area2D@19:<Area2D#31927043405>], [@Area2D@13:<Area2D#31390172461>]]]
+				if combo.size() > 1:
+					# 10: [---[---[@Area2D@19:<Area2D#31927043405>], [@Area2D@13:<Area2D#31390172461>]]]
+					for stacks in combo:
+						# 10: [---[---[---@Area2D@19:<Area2D#31927043405>], [@Area2D@13:<Area2D#31390172461>]]]
+						for card in stacks:
+							hold.append(card)
+					if hold.size() > 0:
+						var sum = 0
+						for cards in hold:
+							sum += cards.cardvalue
+						
+						
+						if sum == target:
+							break
+						else:
+							if !hand_card_played:
+								for card in hand:
+									if card.cardvalue + sum == target:
+										hold.append(card)
+										break
+						sum = 0	
+						for cards in hold:
+							sum += cards.cardvalue
+						print("SUM    ", sum)
+						if sum != target:
+							hold.clear()
+							
+				elif combo.size() == 1:
+					 #[---[[@Area2D@19:<Area2D#31927043405>]]---]
+					if !hand_card_played:
+						for card in hand:
+							if card.cardvalue + moves.keys()[i] == target:
+								hold.append(card)
+								#[---[---[@Area2D@19:<Area2D#31927043405>]---]---]
+								for cards in combo[0]:
+									hold.append(cards)
+								break
+							
+			if !hold.is_empty():
+				break
+	
+	for card in hold:
+		card.speed = 1
+		card.select_card("enemy")
+	print("THIS IS THE INITIAL STACK", stack_holder)
+	for i in hold.size():
+		if hold[i] in hand and i == 0:
+			hold[i].select_card("enemy")
+			break
+	
+	#print(stack_holder, ".....................", hold)
+	var o = []
+	for card in hold:
+		o.append(card.cardvalue)
+	
+	
+	var s = []
+	for card in stack_holder:
+		s.append(card.cardvalue)
+		
+	print("STACK  ", s, " HOLD  ", o)
+	
+	if !stack_holder.is_empty():
+		
+		
+		for area in table_areas:	
+			var ar = table_areas.pick_random()
+			for a in table_holder:
+				if a["owner"] != enemy.player_id and a["value"] == total:
+					play_hand(a["id"], a["pos"], area.h_slider)
+					await get_tree().create_timer(.2).timeout
+					break
+				elif a["value"] == total and a["owner"] != "":
+					play_hand(a["id"], a["pos"], area.h_slider)
+					await get_tree().create_timer(.2).timeout
+					break
+				
+			
+			if !stack_holder.is_empty():
+				play_hand(ar.area_id, ar.position, ar.h_slider)
+				await get_tree().create_timer(.2).timeout
+				break
+			
+				
+	else:
+		var card = null
+		for i in  moves.keys().size():
+			for cards in hand:
+				if cards.cardvalue == moves.keys()[i] and moves[moves.keys()[i]][0].size() == 1:
+					for stacks in table_holder:
+						if stacks["value"] == cards.cardvalue:
+							card = cards
+							break
+				if card:
+					break
+			if card:
+				break
+					
+		if table_holder.size() > 0 and !card:
+			for cards in table_holder:
+				if cards["owner"] != player_hand.player_id:
+					for cd in hand:
+						if cd.cardvalue == cards["value"]:
+							card = cd
+							break
+				if card:
+					break
+			
+				
+					
+		if build_count() == 1 and !card:
+			for cards in hand:
+				if cards.cardvalue == player_build():
+					card = cards
+					break
+					
+		if !card:
+			card = hand.pick_random()
+		card.select_card("enemy")
+		
+		for cards in enemy.player_pile["cards"]:
+			for stacks in table_holder:
+				if stacks["value"] == enemy.player_pile["cards"][enemy.player_pile["cards"].size() - 1].cardvalue and hand_has_card() and stacks["value"] == card.cardvalue:
+					add_card(enemy.player_pile["cards"][enemy.player_pile["cards"].size() - 1], stacks["id"], stacks["value"], stacks["pos"])
+					await get_tree().create_timer(.2).timeout
+					break
+		
+		for area in table_areas:
+			var ar = table_areas.pick_random()	
+			for a in table_holder:
+				if a["owner"] == player_hand.player_id and a["value"] == card.cardvalue:
+					play_hand(a["id"], a["pos"], ar.h_slider)
+					await get_tree().create_timer(.2).timeout
+					break
+				elif a["value"] == total:
+					play_hand(a["id"], a["pos"], ar.h_slider)
+					await get_tree().create_timer(.2).timeout
+					break
+		
+			if !hand_card_played:
+				play_hand(ar.area_id, ar.position, ar.h_slider)
+				await get_tree().create_timer(.2).timeout
+				break
+														 
+			if is_position_occupied(ar.position):
+				ar = table_areas.pick_random()
+			if captured:
+				change_turn()
+				return 
+
+
+	for i in hold.size():
+		if hold[i]:
+			hold[i].speed = 0.5
+	
+	
+				
+	if moves.keys().is_empty() and hand_card_played:
+		change_turn()
+		
+	
+	if hold.is_empty() and hand_card_played:
+		change_turn()
+	
+	if current_turn == 1:
+		return
+		
+	hold.clear()
+	
+	ai_valid_moves()
+	
+	
+	

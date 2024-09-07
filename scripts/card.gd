@@ -18,7 +18,7 @@ var drag_offset = Vector2()
 var selectable = true
 var touchable = true
 var front
-
+var  speed = 0.5
 signal active_card(node)
 signal card_selected(node)
 signal add_to_stack(node)
@@ -37,8 +37,7 @@ func _ready():
 
 func move_card(dest, _rotate = null, _scale = null):
 		var tween = get_tree().create_tween()
-		
-		tween.tween_property(self, "position", dest, 0.5 ).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tween.tween_property(self, "position", dest, speed).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 		if _scale != null:
 			#tween.tween_property(self, "scale", scale, _scale, 0.5, Tween.TRANS_BACK, Tween.EASE_OUT)
 			tween.tween_property(self, "scale", _scale, 0.2 ).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -76,11 +75,11 @@ func set_on_table(value):
 	on_table = value
 
 
-func make_focus():
+func make_focus(player):
 	if selectable:
 		var position_shift = position
 		position_shift.y -= focus_move_on_y
-		if position == handposition:
+		if position == handposition and player == "player":
 			move_card(position_shift, 0.0)
 		
 		selected_card = true
@@ -110,11 +109,11 @@ func table_card(card):
 func _on_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton || event is InputEventScreenTouch:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed || event.is_pressed():			
-			select_card()
+			select_card("player")
 
 
 
-func select_card():
+func select_card(player):
 	if touchable:
 		if selected_card:
 			
@@ -125,7 +124,7 @@ func select_card():
 		elif !selected_card:
 			
 			selected_card = true
-			make_focus()
+			make_focus(player)
 
 #
 #func _on_input_event(viewport, event, shape_idx):

@@ -34,12 +34,13 @@ func initialize_cards():
 			
 		fullpart = firstpart + secondpart
 		hand[i].front = card_path+fullpart
+		#hand[i].change_sprite("res://PNG/blue_back.png")
 		hand[i].change_sprite(card_path+fullpart)
 		
 
 		
-func play_enemy_hand(index):
-	hand[index].select_card()
-	hand[index].change_sprite(hand[index].front_sprite_path)
+func play_enemy_hand(card):
+	print(card.front)
+	card.change_sprite(card.front)
 
 		
