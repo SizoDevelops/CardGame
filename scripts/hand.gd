@@ -6,7 +6,7 @@ class_name PlayerHand
 var hand = []
 var card_path = "res://PNG/"
 var card_width
-@export var card_scale = Vector2(0.7, 0.7)
+@export var card_scale = Vector2(0.6, 0.6)
 var selected_card = null
 var player_id = ""
 var player_pile = {"id": "", "cards": []}

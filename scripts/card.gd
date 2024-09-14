@@ -18,7 +18,7 @@ var drag_offset = Vector2()
 var selectable = true
 var touchable = true
 var front
-var  speed = 0.5
+var  speed = .6
 signal active_card(node)
 signal card_selected(node)
 signal add_to_stack(node)

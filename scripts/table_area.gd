@@ -1,5 +1,5 @@
 
-extends Area2D
+extends Node
 
 
 
@@ -27,11 +27,19 @@ func _on_HSlider_value_changed(value):
 	else:
 		label.visible = true
 
-func _on_input_event(_viewport, event, _shape_idx):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			select_player_area()
+#func _on_input_event(_viewport, event, _shape_idx):
+	#if event is InputEventMouseButton:
+		#if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			#select_player_area()
 			
 
 func select_player_area():
 	emit_signal("id_set", area_id, position_node, h_slider, label)
+
+
+func _on_button_unclicked_pressed():
+	select_player_area()
+
+
+func _on_button_unclicked_button_down():
+	select_player_area()

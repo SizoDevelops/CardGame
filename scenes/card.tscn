@@ -8,6 +8,7 @@ resource_local_to_scene = true
 size = Vector2(80, 133)
 
 [node name="Card" type="Area2D"]
+texture_filter = 1
 script = ExtResource("1_blw7g")
 cardsprite = ExtResource("2_7hjl8")
 focus_move_on_y = 20

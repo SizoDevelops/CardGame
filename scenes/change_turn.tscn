@@ -1,21 +1,28 @@
 [gd_scene load_steps=4 format=3 uid="uid://803qs6qmb16j"]
 
-[ext_resource type="Script" path="res://scripts/change_turn.gd" id="1_stb38"]
+[ext_resource type="Script" path="res://scripts/change.gd" id="1_ex5gm"]
 [ext_resource type="Texture2D" uid="uid://d0hf0ef0hjh37" path="res://other/turn.png" id="2_fl25v"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_do64d"]
-radius = 24.4182
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6sogk"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 
-[node name="ChangeTurn" type="Area2D"]
-script = ExtResource("1_stb38")
+[node name="ChangeTurn" type="Node2D"]
+z_index = -70
+position = Vector2(171, 303)
+script = ExtResource("1_ex5gm")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_do64d")
+[node name="Button" type="Button" parent="."]
+offset_left = -36.0
+offset_top = -38.0
+offset_right = 39.0
+offset_bottom = 33.0
+theme_override_constants/outline_size = -25
+theme_override_styles/focus = SubResource("StyleBoxFlat_6sogk")
+icon = ExtResource("2_fl25v")
+flat = true
+text_overrun_behavior = 1
+clip_text = true
+icon_alignment = 1
+expand_icon = true
 
-[node name="Turn" type="Sprite2D" parent="."]
-texture_filter = 1
-texture_repeat = 1
-scale = Vector2(0.505464, 0.505464)
-texture = ExtResource("2_fl25v")
-
-[connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

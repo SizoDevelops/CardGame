@@ -10,16 +10,16 @@ point_count = 2
 
 [node name="PlayerHand" type="Node2D"]
 script = ExtResource("1_xdbo2")
-card_scale = Vector2(0.6, 0.6)
 
 [node name="Path2D" type="Path2D" parent="."]
-position = Vector2(-17, 5)
+texture_filter = 1
+position = Vector2(-51, 9)
 scale = Vector2(0.960814, 1.22053)
 curve = SubResource("Curve2D_pd5j7")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
 position = Vector2(259.155, 306.424)
-rotation = -0.00150516
+rotation = -0.0015046
 
 [node name="DeckSpawner" type="Marker2D" parent="Path2D/PathFollow2D"]
 z_as_relative = false

@@ -1,28 +1,54 @@
 [gd_scene load_steps=5 format=3 uid="uid://dbeh2b6r8kfks"]
 
 [ext_resource type="Script" path="res://scripts/table_area.gd" id="1_js0a6"]
-[ext_resource type="Texture2D" uid="uid://d0diym2na8uvc" path="res://other/button_unclicked.png" id="2_bn818"]
+[ext_resource type="Theme" uid="uid://dl6dyjmri0dwm" path="res://other/buttons_theme.tres" id="2_dva6a"]
+[ext_resource type="FontFile" uid="uid://deyygjhuc5esa" path="res://other/SuperDessert-EaAyj.ttf" id="2_poxbg"]
 [ext_resource type="Texture2D" uid="uid://bvmvtvso633uf" path="res://other/stack.png" id="3_tjlrw"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_op6u8"]
-size = Vector2(52, 25.05)
-
-[node name="TableArea" type="Area2D"]
+[node name="TableArea" type="Node2D"]
+visible = false
 script = ExtResource("1_js0a6")
 
-[node name="ButtonUnclicked" type="Sprite2D" parent="."]
+[node name="Label" type="Label" parent="."]
+visible = false
+modulate = Color(0.0117647, 0.643137, 1, 1)
+texture_filter = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -21.0
+offset_top = -110.0
+offset_right = 19.0
+offset_bottom = -75.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_poxbg")
+theme_override_font_sizes/font_size = 18
+text = "10"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="ButtonUnclicked" type="Button" parent="."]
 light_mask = 512
 visibility_layer = 512
-z_index = -1
 texture_filter = 1
-position = Vector2(1.54972e-06, -53.5)
-scale = Vector2(0.329114, 0.3125)
-texture = ExtResource("2_bn818")
+offset_left = -36.0
+offset_top = -81.0
+offset_right = 171.0
+offset_bottom = 38.0
+scale = Vector2(0.337967, 0.34557)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("2_dva6a")
+text = "PLACE"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-z_index = -1
-position = Vector2(-9.53674e-07, -53.475)
-shape = SubResource("RectangleShape2D_op6u8")
+[node name="Stack" type="Sprite2D" parent="."]
+visible = false
+z_index = -40
+position = Vector2(-0.94, 1.985)
+scale = Vector2(0.0775894, 0.0757576)
+texture = ExtResource("3_tjlrw")
 
 [node name="Area" type="Marker2D" parent="."]
 
@@ -34,29 +60,4 @@ offset_right = 46.0
 offset_bottom = 3.0
 max_value = 10.0
 
-[node name="Label" type="Label" parent="."]
-visible = false
-modulate = Color(6.257e-06, 0.97232, 0.632366, 1)
-z_index = -15
-texture_filter = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -22.0
-offset_top = -95.0
-offset_right = 18.0
-offset_bottom = -60.0
-grow_horizontal = 2
-size_flags_horizontal = 4
-horizontal_alignment = 1
-vertical_alignment = 1
-clip_text = true
-
-[node name="Stack" type="Sprite2D" parent="."]
-z_index = -40
-position = Vector2(-0.94, 1.985)
-scale = Vector2(0.0775894, 0.0757576)
-texture = ExtResource("3_tjlrw")
-
-[connection signal="id_set" from="." to="." method="_on_id_set"]
-[connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="button_down" from="ButtonUnclicked" to="." method="_on_button_unclicked_button_down"]

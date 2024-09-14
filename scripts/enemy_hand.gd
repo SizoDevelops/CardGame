@@ -34,8 +34,8 @@ func initialize_cards():
 			
 		fullpart = firstpart + secondpart
 		hand[i].front = card_path+fullpart
-		#hand[i].change_sprite("res://PNG/blue_back.png")
-		hand[i].change_sprite(card_path+fullpart)
+		hand[i].change_sprite("res://PNG/blue_back.png")
+		#hand[i].change_sprite(card_path+fullpart)
 		
 
 		

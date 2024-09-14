@@ -1,24 +1,25 @@
-[gd_scene load_steps=6 format=3 uid="uid://qhslm7uj81rj"]
+[gd_scene load_steps=7 format=3 uid="uid://qhslm7uj81rj"]
 
 [ext_resource type="Texture2D" uid="uid://d11u15ru5h0ee" path="res://other/frame.png" id="1_13iwa"]
 [ext_resource type="Texture2D" uid="uid://d0diym2na8uvc" path="res://other/button_unclicked.png" id="1_gfu61"]
 [ext_resource type="Script" path="res://scripts/player_store.gd" id="1_r03w0"]
 [ext_resource type="Texture2D" uid="uid://bvmvtvso633uf" path="res://other/stack.png" id="4_2ra86"]
+[ext_resource type="FontFile" uid="uid://deyygjhuc5esa" path="res://other/SuperDessert-EaAyj.ttf" id="5_qg2qo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_23nsv"]
-size = Vector2(64, 31.75)
+size = Vector2(66, 38)
 
 [node name="PlayerStore" type="Area2D"]
 script = ExtResource("1_r03w0")
 
 [node name="ButtonUnclicked" type="Sprite2D" parent="."]
 z_index = -30
-position = Vector2(-3, -58.125)
+position = Vector2(-3, -62)
 scale = Vector2(0.405063, 0.396875)
 texture = ExtResource("1_gfu61")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-3, -58.125)
+position = Vector2(-3, -66)
 shape = SubResource("RectangleShape2D_23nsv")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -33,8 +34,21 @@ texture = ExtResource("1_13iwa")
 [node name="Stack" type="Sprite2D" parent="."]
 visible = false
 z_index = -40
-position = Vector2(-1.005, 1.975)
+position = Vector2(-3, 2)
 scale = Vector2(0.0775894, 0.0757576)
 texture = ExtResource("4_2ra86")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -31.0
+offset_top = -73.0
+offset_right = 27.0
+offset_bottom = -57.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("5_qg2qo")
+theme_override_font_sizes/font_size = 12
+text = "CAPTURE"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
