@@ -1,9 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://crc6k7l63fg0l"]
+[gd_scene load_steps=5 format=3 uid="uid://crc6k7l63fg0l"]
 
 [ext_resource type="PackedScene" uid="uid://bw78j4fblf4y5" path="res://scenes/hand.tscn" id="1_4m5db"]
 [ext_resource type="Script" path="res://scripts/enemy_hand.gd" id="1_xg6l7"]
+[ext_resource type="Texture2D" uid="uid://druuul3nxsifq" path="res://other/table.png" id="3_rn5xe"]
 
-[sub_resource type="Curve2D" id="Curve2D_p3tmq"]
+[sub_resource type="Curve2D" id="Curve2D_rauea"]
 _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 399.018, 327.603, 0, 0, 0, 0, 662.612, 327.726)
 }
@@ -14,9 +15,10 @@ script = ExtResource("1_xg6l7")
 card_scale = Vector2(0.4, 0.4)
 
 [node name="Path2D" parent="." index="0"]
-position = Vector2(-179, -146)
+position = Vector2(946, -435)
+rotation = 1.5708
 scale = Vector2(1.24054, 0.470081)
-curve = SubResource("Curve2D_p3tmq")
+curve = SubResource("Curve2D_rauea")
 
 [node name="PathFollow2D" parent="Path2D" index="0"]
 position = Vector2(399.018, 327.603)
@@ -24,3 +26,8 @@ rotation = 0.000466689
 
 [node name="DeckLocation" parent="." index="1"]
 position = Vector2(38, 90)
+
+[node name="Table" type="Sprite2D" parent="." index="2"]
+visible = false
+position = Vector2(469, 216)
+texture = ExtResource("3_rn5xe")

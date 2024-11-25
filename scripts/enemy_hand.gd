@@ -1,5 +1,6 @@
 extends PlayerHand
 
+@onready var path = $Path2D
 
 func initialize_cards():
 	var firstpart

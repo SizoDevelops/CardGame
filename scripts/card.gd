@@ -18,7 +18,7 @@ var drag_offset = Vector2()
 var selectable = true
 var touchable = true
 var front
-var  speed = .6
+var  speed = .5
 signal active_card(node)
 signal card_selected(node)
 signal add_to_stack(node)
@@ -81,7 +81,7 @@ func make_focus(player):
 		position_shift.y -= focus_move_on_y
 		if position == handposition and player == "player":
 			move_card(position_shift, 0.0)
-		
+
 		selected_card = true
 		emit_signal("active_card", self)
 		emit_signal("add_to_stack", self)
@@ -89,6 +89,7 @@ func make_focus(player):
 
 func off_focus():
 	if selectable:
+		
 		move_card(handposition, handrotation)
 		emit_signal("remove_from_stack", self)
 		selected_card = false
@@ -97,10 +98,10 @@ func off_focus():
 
 func make_active(card):
 	if card != self:
-		
 		off_focus()
+	else:
+		card.change_sprite(card.front)
 		
-
 func table_card(card):
 	if card == self:
 		emit_signal("add_to_stack", self)
