@@ -18,7 +18,7 @@ var drag_offset = Vector2()
 var selectable = true
 var touchable = true
 var front
-var  speed = .5
+var  speed = .3
 signal active_card(node)
 signal card_selected(node)
 signal add_to_stack(node)
@@ -37,10 +37,11 @@ func _ready():
 
 func move_card(dest, _rotate = null, _scale = null):
 		var tween = get_tree().create_tween()
-		tween.tween_property(self, "position", dest, speed).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tween.tween_property(self, "position", dest, speed)
+		
 		if _scale != null:
-			#tween.tween_property(self, "scale", scale, _scale, 0.5, Tween.TRANS_BACK, Tween.EASE_OUT)
 			tween.tween_property(self, "scale", _scale, 0.2 ).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+			
 		if _rotate != null:
 			tween.tween_property(self, "rotation", _rotate, 0.1 ).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN)
 			
@@ -99,8 +100,6 @@ func off_focus():
 func make_active(card):
 	if card != self:
 		off_focus()
-	else:
-		card.change_sprite(card.front)
 		
 func table_card(card):
 	if card == self:

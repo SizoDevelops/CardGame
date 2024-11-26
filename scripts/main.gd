@@ -86,9 +86,10 @@ func connect_players():
 		var enmy = enemy_player.instantiate()
 		enmy.position = Vector2.ZERO
 		var child = enmy.get_node("Path2D")
+		var deck_location = enmy.get_node("DeckLocation")
 		child.position = enemies[i]["pos"]
 		child.rotation = enemies[i]["rot"]
-		
+		deck_location.position = Vector2(191, 54)
 		player_hands.append(enmy)
 		
 		
@@ -165,11 +166,16 @@ func _on_table_area_id_set(id, node, slider, _label):
 
 func _process(_delta):
 
-	
 	is_stackable()
-
-	hide_show_player_stacks()
 	hide_show_table_areas()
+	
+	for hnd in player_hands:
+		if hnd.player_id != current_player.player_id:
+			for card in hnd.player_pile["cards"]:
+				card.touchable = true
+		else:
+			for card in hnd.player_pile["cards"]:
+				card.touchable = false
 	
 func hide_show_table_areas():
 	for pi in table_areas:
@@ -193,6 +199,15 @@ func hide_show_table_areas():
 				
 			
 func hide_show_player_stacks():
+	
+	for pile in piles:
+		if pile["id"] == current_player.player_id:
+			if current_player.player_pile["cards"].is_empty():
+				pile["stack"].stack.visible = false
+			else: 
+				pile["stack"].stack.visible = true
+
+
 	for hnd in player_hands:
 		if hnd.player_id != current_player.player_id:
 			for card in hnd.player_pile["cards"]:
@@ -200,24 +215,10 @@ func hide_show_player_stacks():
 					card.visible = false
 				else:
 					card.visible = true
-			
-	for card in current_player.player_pile["cards"]:
-		card.touchable = false
-	for hnd in player_hands:
-		if hnd.player_id != current_player.player_id:
-			for card in hnd.player_pile["cards"]:
-				card.touchable = true
-			
-	for pile in piles:
-		if pile["id"] == current_player.player_id:
-			if current_player.player_pile["cards"].size() < 1:
-				pile["stack"].stack.visible = false
-			else: 
-				pile["stack"].stack.visible = true
-				
-				
-				
+					
+					
 func two_player_hand(id, pos,slider):
+	
 	
 	# Place card on table id theres only one card selected  and that card or a card of the same value is not on the table
 	if stack_holder.size() == 1  and !has_stack(total) and !card_in_pile(stack_holder) and build_count() < 1  and !is_position_occupied(pos) and build_count() < 2:
@@ -238,15 +239,7 @@ func two_player_hand(id, pos,slider):
 			add_card(card, id, slider.value, pos)
 			
 		
-		for stc in table_holder:
-			if stc["owner"] == current_player.player_id:
-				for hnd in player_hands:
-					if hnd.player_id != current_player.player_id:
-						for cards in range(len(hnd.player_pile["cards"]) - 1, 0, -1 ):
-							if hnd.player_pile["cards"][cards].cardvalue == stc["value"]:
-								add_card(hnd.player_pile["cards"][cards], id, slider.value, pos)
-							else:
-								break
+		
 # Add all the same value cards to from the hand to a temp store
 		for cards in current_player.hand:
 			for stc in table_holder:
@@ -289,7 +282,6 @@ func two_player_hand(id, pos,slider):
 		remove_from_pile(card)
 		stack_holder.erase(card)
 	
-
 	
 	
 # Check if theres a pile or stack of the same value
@@ -365,13 +357,13 @@ func auto_capture(store, id):
 			
 			if sta["id"] == id:
 				stacks_to_capture.append(sta)
-				print("CALLED")
+				
 			
 			move_to_pile(current_player.player_id, find_object_by_id(current_player.player_id)["pos"])
 			captured = true
 			
 		change_turn()
-		
+	
 
 func can_steal(cards, pos):
 	for stack in table_holder:
@@ -414,8 +406,6 @@ func add_card(card, id, value, pos):
 	
 	for stack in table_holder:
 		if card in stack["stack"]:
-			for cd in range(len(stack["stack"])):
-					stack["stack"][cd].speed = .5
 			stack["stack"].erase(card)
 
 # Add the card to the appropriate stack or create a new stack if it doesn't exist
@@ -492,7 +482,7 @@ func add_card(card, id, value, pos):
 #Triggered when you click on the captured piles 
 func _on_player_store_id_set(id, node):
 	store_position  = node.get_global_position()
-	hide_show_player_stacks()
+	
 	move_to_pile(id, store_position)
 	captured = true
 
@@ -500,11 +490,6 @@ func move_to_pile(id, store):
 	
 	last_capture = id
 	if stacks_to_capture.size() == 1 and id == current_player.player_id:
-		for ca in stacks_to_capture[0]["stack"]:
-					current_player.player_pile["cards"].append(ca)
-					ca.handposition = store
-					
-					
 		for sta in table_holder:
 			if sta["id"] == stacks_to_capture[0]["id"]:
 				table_holder.erase(sta)
@@ -512,14 +497,22 @@ func move_to_pile(id, store):
 		for cards in stacks_to_capture[0]["stack"]:
 			cards.move_card(store)
 			
-		
+			
+		for ca in stacks_to_capture[0]["stack"]:
+					current_player.player_pile["cards"].append(ca)
+					ca.handposition = store
+					
 		stacks_to_capture.clear()
+		
 	
+	
+	# Prevent Consercutive steals
 	for hnd in player_hands:
 		if hnd.player_id != current_player.player_id:
 			for cards in hnd.player_pile["cards"]:
 				cards.touchable = false
-	
+				
+	hide_show_player_stacks()
 
 	
 
@@ -634,17 +627,20 @@ func _on_change_turn_change_turn():
 	
 func change_turn():
 	
-	if current_turn < len(player_hands):
+	if current_turn < len(player_hands) and hand_card_played:
 		current_turn += 1
 		
-	if current_turn == len(player_hands):
+	if current_turn == len(player_hands) and hand_card_played:
 		if current_player.hand.is_empty():
 			initialize_round()
+			
 		current_turn = 0
+		
 		change_turn_btn.visible = true
 		
-	print(current_turn)
-		
+	
+	
+	
 	if hand_card_played:
 		current_player = player_hands[current_turn]
 		hand_card_played = false
@@ -659,13 +655,13 @@ func change_turn():
 
 			if current_player.player_id != player.player_id:
 				change_turn_btn.visible = false
-				await get_tree().create_timer(1).timeout
+				await get_tree().create_timer(.5).timeout
 				play_ai_move()
 				
 			
 				
 	captured = false
-
+	
 #AI Logic
 
 func initialize_round():
@@ -848,8 +844,7 @@ func check_better_stack(moves, hand, target):
 			
 			break
 			
-	for cd in range(len(stack_holder)):
-			stack_holder[cd].speed = (cd+1) * 0.9
+	
 		
 	#print(stack_holder, ".....................", hold)
 	
@@ -870,15 +865,11 @@ func check_better_stack(moves, hand, target):
 	if sum1 > target:
 		stack_holder.clear()
 
-	for stack in table_holder:
-		
-		for cd in range(len(stack["stack"])):
-			stack["stack"][cd].speed = 2
+	
 				
 	
 	if !stack_holder.is_empty():
-		for i in stack_holder.size():
-			stack_holder[i].speed = (i+1) * 0.9
+		
 		for area in table_areas:	
 			var ar = table_areas.pick_random()
 			for a in table_holder:
@@ -929,10 +920,10 @@ func check_better_stack(moves, hand, target):
 					
 		if !card:
 			card = hand.pick_random()
-			card.speed = 2
+			
 		if card:
 			card.select_card("enemy")
-			card.speed = 2
+			
 
 		for area in table_areas:
 			var ar = table_areas.pick_random()	
@@ -957,9 +948,7 @@ func check_better_stack(moves, hand, target):
 				hold.clear()
 
 
-	for i in hold.size():
-		if hold[i]:
-			hold[i].speed = .5
+	
 
 	if moves.keys().is_empty() and hand_card_played:
 		change_turn()
