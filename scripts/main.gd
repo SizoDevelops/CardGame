@@ -168,14 +168,11 @@ func _process(_delta):
 
 	is_stackable()
 	hide_show_table_areas()
+	hide_show_player_stacks()
 	
-	for hnd in player_hands:
-		if hnd.player_id != current_player.player_id:
-			for card in hnd.player_pile["cards"]:
-				card.touchable = true
-		else:
-			for card in hnd.player_pile["cards"]:
-				card.touchable = false
+
+	
+	
 	
 func hide_show_table_areas():
 	for pi in table_areas:
@@ -207,15 +204,19 @@ func hide_show_player_stacks():
 			else: 
 				pile["stack"].stack.visible = true
 
-
 	for hnd in player_hands:
 		if hnd.player_id != current_player.player_id:
 			for card in hnd.player_pile["cards"]:
-				if hnd.player_pile["cards"].find(card) != hnd.player_pile["cards"].size() - 1:
-					card.visible = false
-				else:
-					card.visible = true
-					
+				card.touchable = true
+		else:
+			for card in hnd.player_pile["cards"]:
+				card.touchable = false
+		
+	for hnd in player_hands:
+		for i in hnd.player_pile["cards"].size():
+			hnd.player_pile["cards"][i].z_index = i
+			if i !=  hnd.player_pile["cards"].size() - 1:
+				hnd.player_pile["cards"][i].touchable = false
 					
 func two_player_hand(id, pos,slider):
 	
@@ -497,22 +498,24 @@ func move_to_pile(id, store):
 		for cards in stacks_to_capture[0]["stack"]:
 			cards.move_card(store)
 			
-			
+		var count = 0
 		for ca in stacks_to_capture[0]["stack"]:
-					current_player.player_pile["cards"].append(ca)
 					ca.handposition = store
-					
+					count += 1
+		if count >= len(stacks_to_capture[0]["stack"]):
+			for cards in stacks_to_capture[0]["stack"]:
+				current_player.player_pile["cards"].append(cards)
+
 		stacks_to_capture.clear()
+
 		
-	
-	
 	# Prevent Consercutive steals
 	for hnd in player_hands:
 		if hnd.player_id != current_player.player_id:
 			for cards in hnd.player_pile["cards"]:
 				cards.touchable = false
 				
-	hide_show_player_stacks()
+	
 
 	
 

@@ -25,17 +25,16 @@ signal add_to_stack(node)
 signal remove_from_stack(node)
 
 
+
 func set_selectable(val):
 	selectable = val
-
-
-
 
 func _ready():
 	if not is_connected("input_event", Callable(self, "_on_input_event")):
 		connect("input_event", Callable(self, "_on_input_event"))	
 
 func move_card(dest, _rotate = null, _scale = null):
+		
 		var tween = get_tree().create_tween()
 		tween.tween_property(self, "position", dest, speed)
 		
