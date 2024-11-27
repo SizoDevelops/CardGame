@@ -155,7 +155,7 @@ func player_piles():
 		$Controller/Stores.add_child(pile)
 		
 		if pile.area_id == current_player.player_id:
-			pile.label.text = "Capture"
+			pile.label.text = "Capture" 
 		else:
 			pile.label.text = "Steal"
 	
