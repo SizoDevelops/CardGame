@@ -169,14 +169,15 @@ func _process(_delta):
 	is_stackable()
 	hide_show_table_areas()
 	hide_show_player_stacks()
-	
+	auto_steal()
 
 	
 	
 	
 func hide_show_table_areas():
 	for pi in table_areas:
-		
+		pi.z_index = 0
+		pi.visible = false
 		for stack in table_holder:
 			if stack["stack"].size() > 1 and stack["id"] == pi.area_id:
 				pi.visible = true
@@ -188,11 +189,13 @@ func hide_show_table_areas():
 			else:
 				pi.visible = false
 				pi.stack.visible = false
+				
 		if table_holder.size() == 0:
 			pi.stack.visible = false
 			
 		if stack_holder.size() > 0:
 				pi.visible = true
+		
 				
 			
 func hide_show_player_stacks():
@@ -486,7 +489,15 @@ func _on_player_store_id_set(id, node):
 	
 	move_to_pile(id, store_position)
 	captured = true
-
+func auto_steal():
+	for hand in player_hands:
+		if hand.player_id != current_player.player_id:
+			for stack in table_holder:
+				if stack["owner"] == current_player.player_id:
+					for cards in hand.player_pile["cards"]:
+						if hand.player_pile["cards"].find(cards) == hand.player_pile["cards"].size() - 1 and cards.cardvalue == stack["value"]:
+							add_card(cards, stack["id"],stack["value"], stack["pos"])
+					break
 func move_to_pile(id, store):
 	
 	last_capture = id
@@ -731,10 +742,11 @@ func ai_valid_moves():
 		for values in table_holder:
 			if values["owner"] != current_player.player_id and values["build"] == "single" and values["value"] < 10:
 				hold_values.append({"value": values["value"], "stack":values["stack"]})
-				
+		
 		var highest = 0
 		if current_player.sorted_hand().size() > 0 and priority_moves.size() > 0 and  highest < priority_moves.max() and !player_build() and priority_moves.max() >= current_player.sorted_hand()[0].cardvalue:
 			highest = priority_moves.max()
+			
 		elif player_build():
 			highest = player_build()
 		elif current_player.sorted_hand().size() > 0:
@@ -868,9 +880,7 @@ func check_better_stack(moves, hand, target):
 	if sum1 > target:
 		stack_holder.clear()
 
-	
-				
-	
+
 	if !stack_holder.is_empty():
 		
 		for area in table_areas:	
