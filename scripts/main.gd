@@ -170,7 +170,7 @@ func _process(_delta):
 	hide_show_table_areas()
 	hide_show_player_stacks()
 	auto_steal()
-
+	
 	
 	
 	
