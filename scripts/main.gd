@@ -10,7 +10,7 @@ var last_capture = ""
 var positions = [
 	Vector2(216,147),
 	Vector2(330, 147),
-	Vector2(443,147),
+	Vector2(443,147), 
 	Vector2(555,147),
 	Vector2(666,147),
 	
