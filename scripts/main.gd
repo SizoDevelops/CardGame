@@ -970,4 +970,3 @@ func check_better_stack(moves, hand, target):
 		change_turn()
 	hold.clear()
 
-	
